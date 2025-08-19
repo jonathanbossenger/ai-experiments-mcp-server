@@ -1,0 +1,26 @@
+{
+    "name": "jonathanbossenger/ai-experiments-mcp-server",
+    "description": "AI Experiments MCP Server",
+    "type": "wordpress-plugin",
+    "license": "GPL-2.0-or-later",
+    "authors": [
+        {
+            "name": "Jonathan Bossenger",
+            "email": "jonathanbossenger@gmail.com"
+        }
+    ],
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "https://github.com/WordPress/mcp-adapter"
+        }
+    ],
+    "require": {
+        "wordpress/mcp-adapter": "dev-trunk"
+    },
+    "config": {
+        "allow-plugins": {
+            "automattic/jetpack-autoloader": true
+        }
+    }
+}
