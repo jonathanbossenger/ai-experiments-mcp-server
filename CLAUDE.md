@@ -63,6 +63,37 @@ Error responses include descriptive error messages and appropriate error codes i
 
 **Integration**: Registered as a Tool in the MCP server's tools array to provide executable security analysis functionality. 
 
+#### Plugin List Ability
+A Tool that retrieves a list of all installed WordPress plugins with their names and slugs.
+
+**Purpose**: Provides a comprehensive list of installed WordPress plugins to enable users to select plugins by name or slug for further operations.
+
+**Input Parameters**: None (no input required)
+
+**Functionality**:
+- Retrieves all installed plugins using WordPress `get_plugins()` function
+- Returns both active and inactive plugins
+- Extracts plugin name and slug/directory information
+- Provides essential plugin metadata for identification
+- No filtering or pagination - returns complete plugin inventory
+- Uses WordPress core functions for reliable plugin detection
+
+**Output Format**: Returns JSON-formatted array containing plugin information with the following structure for each plugin:
+- `name`: Human-readable plugin name from plugin header
+- `slug`: Plugin directory/slug identifier  
+- `file`: Main plugin file path
+- `status`: Whether plugin is active or inactive
+- `version`: Plugin version number
+
+**Error Handling**: All error cases return JSON responses with error information:
+- WordPress plugin functions not available
+- File system access issues
+- Permission problems reading plugin directories
+- Any other system-level errors accessing plugin data
+Error responses include descriptive error messages in JSON format.
+
+**Integration**: Registered as a Tool in the MCP server's tools array to provide plugin discovery functionality.
+
 ## Development Commands
 
 Since this is a Composer-managed WordPress plugin, the following commands are available from the MCP Adapter dependency:
