@@ -72,7 +72,9 @@ function mcp_server_create_post( $input ) {
     $post_data = array(
         'post_title'   => sanitize_text_field( $input['title'] ),
         'post_content' => wp_kses_post( $input['content'] ),
-        'post_status'  => isset( $input['status'] ) ? sanitize_text_field( $input['status'] ) : 'draft',
+        'post_status'  => ( isset( $input['status'] ) && in_array( sanitize_text_field( $input['status'] ), array( 'draft', 'publish' ), true ) )
+            ? sanitize_text_field( $input['status'] )
+            : 'draft',
         'post_author'  => get_current_user_id(),
     );
     $post_id = wp_insert_post( $post_data );
