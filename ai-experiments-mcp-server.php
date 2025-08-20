@@ -64,7 +64,6 @@ add_action( 'abilities_api_init', function(){
  * @return array Result containing post ID and URL.
  */
 function mcp_server_create_post( $input ) {
-    error_log( print_r( $input, true ) );
     // Validate input
     if ( ! isset( $input['title'], $input['content'] ) ) {
         return new WP_Error( 'invalid_input', __( 'Invalid input data', 'mcp-server' ), array( 'status' => 400 ) );
