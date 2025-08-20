@@ -39,12 +39,12 @@ function ai_experiments_define_security_check_runner() {
 	private $plugin_slug;
 
 	/**
-	 * Constructor.
+	 * Set the plugin slug to check.
 	 *
 	 * @param string $plugin_slug Plugin slug to check.
 	 */
-	public function __construct( $plugin_slug ) {
-		parent::__construct();
+	public function set_plugin_slug( $plugin_slug ) {
+		
 		$this->plugin_slug = $plugin_slug;
 	}
 
@@ -241,7 +241,8 @@ function ai_experiments_plugin_security_check( $input ) {
 		}
 
 		// Create security check runner
-		$runner = new AI_Experiments_Security_Check_Runner( $plugin_slug );
+		$runner = new AI_Experiments_Security_Check_Runner();
+		$runner->set_plugin_slug( $plugin_slug );
 		
 		// Set up the runner
 		$runner->set_plugin( $plugin_slug );

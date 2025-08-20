@@ -109,10 +109,10 @@ A Tool that performs security checks on WordPress plugins using the Plugin Check
 - `plugin_slug` (required, string): The plugin slug/name to check (e.g., "akismet", "hello-dolly")
 
 **Functionality**:
-- Executes security-specific checks from Plugin Check's security category
-- Leverages Plugin Check's `wp plugin check` command with `--categories=security` filter
-- Uses JSON output format for structured data return
-- Runs all available security checks with default settings for WordPress.org plugin repository inclusion
+- Executes security-specific checks from Plugin Check's security category using Plugin Check's internal PHP APIs
+- Uses Plugin Check's `Abstract_Check_Runner` with custom `AI_Experiments_Security_Check_Runner` class
+- Filters checks to security category only using `Check_Categories::CATEGORY_SECURITY`
+- Runs all available security checks directly through Plugin Check's check runner system
 - No additional configuration options - uses standard security validation rules
 - Performs checks including but not limited to:
   - Input validation and sanitization issues
@@ -122,7 +122,7 @@ A Tool that performs security checks on WordPress plugins using the Plugin Check
   - XSS vulnerabilities
   - File inclusion/execution security
   - Authentication and authorization flaws
-- Requires WP-CLI and Plugin Check plugin to be available
+- Requires Plugin Check plugin to be installed and active (no WP-CLI dependency)
 
 **Output Format**: Returns JSON object containing:
 - `success`: Boolean indicating check completion
@@ -144,16 +144,24 @@ A Tool that performs security checks on WordPress plugins using the Plugin Check
 
 **Error Handling**: All error cases return JSON responses with error information:
 - Invalid or non-existent plugin slug
-- Plugin Check plugin not available or not installed
-- WP-CLI not available
+- Plugin Check plugin not available or not active
+- Plugin Check classes not properly loaded
 - Permission issues accessing plugin files
-- WP-CLI command execution failures
-- JSON parsing errors
+- Plugin Check runner initialization failures
+- Check execution errors
 - Any other system-level errors
 
 **Permission Requirements**: User must have `manage_options` capability
 
 **Integration**: Registered as a Tool in the MCP server's tools array.
+
+**Technical Implementation**:
+- **Custom Check Runner**: `AI_Experiments_Security_Check_Runner` class extends Plugin Check's `Abstract_Check_Runner`
+- **Dynamic Class Loading**: Class is defined only when Plugin Check dependencies are available using `ai_experiments_define_security_check_runner()`
+- **Security Category Filtering**: Uses `Check_Categories::CATEGORY_SECURITY` constant to filter checks
+- **Result Transformation**: `ai_experiments_transform_check_results()` converts Plugin Check's `Check_Result` objects to MCP-compatible JSON format
+- **Dependency Management**: Validates Plugin Check availability and class loading before execution
+- **No WP-CLI Dependency**: Completely removed WP-CLI requirement, uses direct PHP API calls for better performance and reliability
 
 ## Development Commands
 
