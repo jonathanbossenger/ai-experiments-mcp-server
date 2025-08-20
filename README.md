@@ -20,6 +20,7 @@ This plugin serves as an AI experiments server, specifically configured to expos
 
 ### Architecture
 
+- **Abilities API**: Uses the WordPress Abilities API for tool registration
 - **Transport**: REST API-based MCP communication
 - **Error Handling**: WordPress error logging integration
 - **Security**: Permission-based access control for all tools
@@ -30,26 +31,37 @@ This plugin serves as an AI experiments server, specifically configured to expos
 - WordPress 5.0 or higher
 - PHP 7.4 or higher
 - Composer for dependency management
+- [WordPress Abilities API](https://github.com/WordPress/abilities-api) feature plugin (scheduled for WordPress 6.9)
 - Plugin Check plugin (for security checks)
 
 ## Installation
 
-1. Clone this repository into your WordPress plugins directory:
+1. Install the WordPress Abilities API feature plugin:
+```bash
+# Download and install from GitHub
+cd wp-content/plugins/
+git clone https://github.com/WordPress/abilities-api.git
+wp plugin activate abilities-api
+```
+
+2. Clone this repository into your WordPress plugins directory:
 ```bash
 cd wp-content/plugins/
 git clone https://github.com/jonathanbossenger/ai-experiments-mcp-server.git
 ```
 
-2. Install dependencies:
+3. Install dependencies:
 ```bash
 cd ai-experiments-mcp-server
 composer install
 ```
 
-3. Activate the plugin through the WordPress admin or WP-CLI:
+4. Activate the plugin through the WordPress admin or WP-CLI:
 ```bash
 wp plugin activate ai-experiments-mcp-server
 ```
+
+**Note**: The Abilities API is scheduled for inclusion in WordPress 6.9. Until then, the feature plugin must be installed and activated for this MCP server to function properly.
 
 ## API Endpoints
 
