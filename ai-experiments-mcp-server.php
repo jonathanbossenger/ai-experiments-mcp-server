@@ -45,7 +45,8 @@ add_action( 'mcp_adapter_init', function ( $adapter ) {
 			'plugin-list/get-plugins',
 			'plugin-security/check-security',
 			'mcp-server/create-post',
-			'debug-log/read-log'
+			'debug-log/read-log',
+			'debug-log/clear-log'
 		),
 	);
 } );

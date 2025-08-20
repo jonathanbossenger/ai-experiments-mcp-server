@@ -65,6 +65,47 @@ add_action( 'abilities_api_init', function () {
 	);
 } );
 
+// Register the Debug Log Clear ability
+add_action( 'abilities_api_init', function () {
+	wp_register_ability(
+		'debug-log/clear-log',
+		array(
+			'label'               => __( 'Debug Log Clearer', 'ai-experiments-mcp-server' ),
+			'description'         => __( 'Clears the contents of the WordPress debug.log file from wp-content directory.', 'ai-experiments-mcp-server' ),
+			'input_schema'        => array(),
+			'output_schema'       => array(
+				'type'       => 'object',
+				'properties' => array(
+					'success' => array(
+						'type'        => 'boolean',
+						'description' => __( 'Whether the debug log clearing completed successfully.', 'ai-experiments-mcp-server' ),
+					),
+					'file_path' => array(
+						'type'        => 'string',
+						'description' => __( 'Path to the debug log file.', 'ai-experiments-mcp-server' ),
+					),
+					'previous_size' => array(
+						'type'        => 'integer',
+						'description' => __( 'Size of the debug log file before clearing in bytes.', 'ai-experiments-mcp-server' ),
+					),
+					'message' => array(
+						'type'        => 'string',
+						'description' => __( 'Success or informational message.', 'ai-experiments-mcp-server' ),
+					),
+					'error'   => array(
+						'type'        => 'string',
+						'description' => __( 'Error message if the clearing failed.', 'ai-experiments-mcp-server' ),
+					),
+				),
+			),
+			'execute_callback'    => 'ai_experiments_clear_debug_log',
+			'permission_callback' => function () {
+				return current_user_can( 'manage_options' );
+			}
+		)
+	);
+} );
+
 /**
  * Read the WordPress debug.log file contents.
  *
@@ -136,6 +177,68 @@ function ai_experiments_read_debug_log( $input ) {
 		return array(
 			'success' => false,
 			'error'   => 'Failed to read debug log: ' . $e->getMessage(),
+		);
+	}
+}
+
+/**
+ * Clear the WordPress debug.log file contents.
+ *
+ * @param array $input Input parameters (none required for clearing).
+ *
+ * @return array JSON response with clearing status or error.
+ */
+function ai_experiments_clear_debug_log( $input ) {
+	try {
+		// Determine the debug log file path
+		$debug_log_path = WP_CONTENT_DIR . '/debug.log';
+
+		// Check if the debug log file exists
+		if ( ! file_exists( $debug_log_path ) ) {
+			return array(
+				'success'   => true,
+				'message'   => 'Debug log file does not exist, nothing to clear.',
+				'file_path' => $debug_log_path,
+				'previous_size' => 0,
+			);
+		}
+
+		// Check if the file is writable
+		if ( ! is_writable( $debug_log_path ) ) {
+			return array(
+				'success'   => false,
+				'error'     => 'Debug log file is not writable: ' . $debug_log_path,
+				'file_path' => $debug_log_path,
+			);
+		}
+
+		// Get file size before clearing
+		$previous_size = filesize( $debug_log_path );
+
+		// Clear the file by truncating it to 0 bytes
+		$file_handle = fopen( $debug_log_path, 'w' );
+		if ( ! $file_handle ) {
+			return array(
+				'success'       => false,
+				'error'         => 'Unable to open debug log file for writing: ' . $debug_log_path,
+				'file_path'     => $debug_log_path,
+				'previous_size' => $previous_size,
+			);
+		}
+
+		fclose( $file_handle );
+
+		return array(
+			'success'       => true,
+			'message'       => 'Debug log file cleared successfully.',
+			'file_path'     => $debug_log_path,
+			'previous_size' => $previous_size,
+		);
+
+	} catch ( Exception $e ) {
+		return array(
+			'success' => false,
+			'error'   => 'Failed to clear debug log: ' . $e->getMessage(),
 		);
 	}
 }
