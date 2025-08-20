@@ -9,6 +9,26 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
 }
 
+/**
+ * Helper function to convert WP_Error to array format for MCP compatibility.
+ *
+ * @param WP_Error $wp_error The WP_Error object to convert.
+ * @param string   $context  Optional context for the error.
+ *
+ * @return array Formatted error response.
+ */
+function ai_experiments_wp_error_to_array( $wp_error, $context = '' ) {
+	$error_message = $wp_error->get_error_message();
+	if ( $context ) {
+		$error_message = $context . ': ' . $error_message;
+	}
+	
+	return array(
+		'success' => false,
+		'error'   => $error_message,
+	);
+}
+
 // Register an ability to create a post
 add_action( 'abilities_api_init', function () {
 	wp_register_ability( 'mcp-server/create-post', array(
@@ -37,9 +57,17 @@ add_action( 'abilities_api_init', function () {
 		'output_schema'       => array(
 			'type'       => 'object',
 			'properties' => array(
+				'success' => array(
+					'type'        => 'boolean',
+					'description' => __( 'Whether the post creation completed successfully', 'mcp-server' )
+				),
 				'url' => array(
 					'type'        => 'string',
 					'description' => __( 'The URL of the created post', 'mcp-server' )
+				),
+				'error' => array(
+					'type'        => 'string',
+					'description' => __( 'Error message if post creation failed', 'mcp-server' )
 				)
 			)
 		),
@@ -60,8 +88,12 @@ add_action( 'abilities_api_init', function () {
 function mcp_server_create_post( $input ) {
 	// Validate input
 	if ( ! isset( $input['title'], $input['content'] ) ) {
-		return new WP_Error( 'invalid_input', __( 'Invalid input data', 'mcp-server' ), array( 'status' => 400 ) );
+		return array(
+			'success' => false,
+			'error'   => __( 'Invalid input data', 'mcp-server' ),
+		);
 	}
+	
 	// Create the post
 	$post_data = array(
 		'post_title'   => sanitize_text_field( $input['title'] ),
@@ -76,11 +108,15 @@ function mcp_server_create_post( $input ) {
 	);
 	$post_id   = wp_insert_post( $post_data );
 	if ( is_wp_error( $post_id ) ) {
-		return new WP_Error( 'post_creation_failed', __( 'Failed to create post', 'mcp-server' ), array( 'status' => 500 ) );
+		return array(
+			'success' => false,
+			'error'   => __( 'Failed to create post', 'mcp-server' ) . ': ' . $post_id->get_error_message(),
+		);
 	}
 
 	// Return the result
 	return array(
-		'url' => get_permalink( $post_id ),
+		'success' => true,
+		'url'     => get_permalink( $post_id ),
 	);
 }
