@@ -9,6 +9,114 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
 }
 
+/**
+ * Define the custom Security Check Runner class if not already defined.
+ * This ensures Plugin Check classes are available before extending them.
+ */
+function ai_experiments_define_security_check_runner() {
+	if ( class_exists( 'AI_Experiments_Security_Check_Runner' ) ) {
+		return true;
+	}
+
+	// Check if required Plugin Check classes are available
+	if ( ! class_exists( 'WordPress\\Plugin_Check\\Checker\\Abstract_Check_Runner' ) ||
+		 ! class_exists( 'WordPress\\Plugin_Check\\Checker\\Check_Categories' ) ) {
+		return false;
+	}
+
+	/**
+	 * Custom Security Check Runner for Plugin Check integration.
+	 *
+	 * Extends Plugin Check's Abstract_Check_Runner to run security-only checks.
+	 */
+	class AI_Experiments_Security_Check_Runner extends WordPress\Plugin_Check\Checker\Abstract_Check_Runner {
+
+	/**
+	 * Plugin slug to check.
+	 *
+	 * @var string
+	 */
+	private $plugin_slug;
+
+	/**
+	 * Constructor.
+	 *
+	 * @param string $plugin_slug Plugin slug to check.
+	 */
+	public function __construct( $plugin_slug ) {
+		parent::__construct();
+		$this->plugin_slug = $plugin_slug;
+	}
+
+	/**
+	 * Returns the plugin parameter based on the request.
+	 *
+	 * @return string The plugin parameter from the request.
+	 */
+	protected function get_plugin_param() {
+		return $this->plugin_slug;
+	}
+
+	/**
+	 * Returns an array of Check slugs to run based on the request.
+	 * Returns empty array to run all available checks.
+	 *
+	 * @return array An array of Check slugs.
+	 */
+	protected function get_check_slugs_param() {
+		return array();
+	}
+
+	/**
+	 * Returns an array of Check slugs to exclude based on the request.
+	 *
+	 * @return array An array of Check slugs.
+	 */
+	protected function get_check_exclude_slugs_param() {
+		return array();
+	}
+
+	/**
+	 * Returns the include experimental parameter based on the request.
+	 *
+	 * @return bool Returns false to exclude experimental checks.
+	 */
+	protected function get_include_experimental_param() {
+		return false;
+	}
+
+	/**
+	 * Returns an array of categories for filtering the checks.
+	 * Returns security category only.
+	 *
+	 * @return array An array of categories.
+	 */
+	protected function get_categories_param() {
+		return array( Check_Categories::CATEGORY_SECURITY );
+	}
+
+	/**
+	 * Returns plugin slug parameter.
+	 *
+	 * @return string Plugin slug.
+	 */
+	protected function get_slug_param() {
+		return $this->plugin_slug;
+	}
+
+		/**
+		 * Determines if the current request is intended for the plugin checker.
+		 *
+		 * @return boolean Returns true since we're always checking plugins.
+		 */
+		public static function is_plugin_check() {
+			return true;
+		}
+	}
+
+	return true;
+}
+
 // Register the Plugin Security Check ability
 add_action( 'abilities_api_init', function () {
 	wp_register_ability(
@@ -95,21 +203,21 @@ function ai_experiments_plugin_security_check( $input ) {
 
 	$plugin_slug = sanitize_text_field( $input['plugin_slug'] );
 
-	// Check if WP-CLI is available
-	if ( ! defined( 'WP_CLI' ) || ! class_exists( 'WP_CLI' ) ) {
+	// Check if Plugin Check plugin is available and active
+	if ( ! is_plugin_active( 'plugin-check/plugin.php' ) ) {
 		return array(
 			'success'     => false,
 			'plugin_slug' => $plugin_slug,
-			'error'       => 'WP-CLI is not available. This functionality requires WP-CLI to execute Plugin Check commands.',
+			'error'       => 'Plugin Check plugin is not installed or not active. Please install and activate the Plugin Check plugin.',
 		);
 	}
 
-	// Check if Plugin Check plugin is available
-	if ( ! is_plugin_active( 'plugin-check/plugin.php' ) && ! file_exists( WP_PLUGIN_DIR . '/plugin-check/plugin.php' ) ) {
+	// Check if Plugin Check classes are available
+	if ( ! class_exists( 'WordPress\\Plugin_Check\\Checker\\Abstract_Check_Runner' ) ) {
 		return array(
 			'success'     => false,
 			'plugin_slug' => $plugin_slug,
-			'error'       => 'Plugin Check plugin is not installed or not available.',
+			'error'       => 'Plugin Check classes are not available. Please ensure Plugin Check plugin is properly loaded.',
 		);
 	}
 
@@ -123,65 +231,44 @@ function ai_experiments_plugin_security_check( $input ) {
 	}
 
 	try {
-		// Execute Plugin Check command for security category in JSON format
-		$command = sprintf(
-			'plugin check %s --categories=security --format=json --fields=file,line,column,type,severity,message,source',
-			escapeshellarg( $plugin_slug )
-		);
-
-		// Capture output using WP-CLI's internal runner
-		ob_start();
-		$exit_code = 0;
-
-		try {
-			WP_CLI::runcommand( $command, array(
-				'return'     => 'all',
-				'parse'      => 'json',
-				'launch'     => false,
-				'exit_error' => false,
-			) );
-		} catch ( Exception $e ) {
-			$exit_code = 1;
-			$output    = ob_get_clean();
-
+		// Define the security check runner class if needed
+		if ( ! ai_experiments_define_security_check_runner() ) {
 			return array(
 				'success'     => false,
 				'plugin_slug' => $plugin_slug,
-				'error'       => 'Plugin Check command failed: ' . $e->getMessage(),
+				'error'       => 'Plugin Check classes are not available. Please ensure Plugin Check plugin is properly loaded.',
 			);
 		}
 
-		$output = ob_get_clean();
+		// Create security check runner
+		$runner = new AI_Experiments_Security_Check_Runner( $plugin_slug );
+		
+		// Set up the runner
+		$runner->set_plugin( $plugin_slug );
+		$runner->set_slug( $plugin_slug );
+		$runner->set_categories( array( WordPress\Plugin_Check\Checker\Check_Categories::CATEGORY_SECURITY ) );
+		$runner->set_experimental_flag( false );
+		$runner->set_check_slugs( array() ); // Run all available checks
+		$runner->set_check_exclude_slugs( array() ); // No exclusions
 
-		// Parse JSON output
-		$check_results = json_decode( $output, true );
+		// Prepare environment
+		$cleanup = $runner->prepare();
 
-		if ( json_last_error() !== JSON_ERROR_NONE ) {
-			return array(
-				'success'     => false,
-				'plugin_slug' => $plugin_slug,
-				'error'       => 'Failed to parse Plugin Check output as JSON: ' . json_last_error_msg(),
-			);
+		// Run security checks
+		$check_result = $runner->run();
+
+		// Clean up
+		if ( is_callable( $cleanup ) ) {
+			$cleanup();
 		}
 
-		// Process results
-		$security_findings   = array();
-		$error_count         = 0;
-		$warning_count       = 0;
-		$total_files_checked = 0;
+		// Transform Plugin Check results to our expected format
+		$security_findings = ai_experiments_transform_check_results( $check_result );
 
-		if ( is_array( $check_results ) ) {
-			foreach ( $check_results as $result ) {
-				if ( isset( $result['type'] ) ) {
-					if ( $result['type'] === 'ERROR' ) {
-						$error_count ++;
-					} elseif ( $result['type'] === 'WARNING' ) {
-						$warning_count ++;
-					}
-				}
-				$security_findings[] = $result;
-			}
-		}
+		// Calculate summary
+		$error_count = $check_result->get_error_count();
+		$warning_count = $check_result->get_warning_count();
+		$total_issues = $error_count + $warning_count;
 
 		// Count unique files checked
 		$files_checked = array();
@@ -198,7 +285,7 @@ function ai_experiments_plugin_security_check( $input ) {
 			'security_findings' => $security_findings,
 			'summary'           => array(
 				'total_files_checked' => $total_files_checked,
-				'total_issues'        => count( $security_findings ),
+				'total_issues'        => $total_issues,
 				'error_count'         => $error_count,
 				'warning_count'       => $warning_count,
 			),
@@ -208,7 +295,60 @@ function ai_experiments_plugin_security_check( $input ) {
 		return array(
 			'success'     => false,
 			'plugin_slug' => $plugin_slug,
-			'error'       => 'Unexpected error during security check: ' . $e->getMessage(),
+			'error'       => 'Security check failed: ' . $e->getMessage(),
 		);
 	}
+}
+
+/**
+ * Transform Plugin Check results to our expected JSON format.
+ *
+ * @param WordPress\Plugin_Check\Checker\Check_Result $check_result Plugin Check result object.
+ *
+ * @return array Transformed security findings array.
+ */
+function ai_experiments_transform_check_results( $check_result ) {
+	$security_findings = array();
+
+	// Process errors
+	$errors = $check_result->get_errors();
+	foreach ( $errors as $file => $lines ) {
+		foreach ( $lines as $line_num => $columns ) {
+			foreach ( $columns as $column_num => $messages ) {
+				foreach ( $messages as $message_data ) {
+					$security_findings[] = array(
+						'file'     => $file,
+						'line'     => intval( $line_num ),
+						'column'   => intval( $column_num ),
+						'type'     => 'ERROR',
+						'severity' => isset( $message_data['severity'] ) ? intval( $message_data['severity'] ) : 5,
+						'message'  => isset( $message_data['message'] ) ? $message_data['message'] : '',
+						'source'   => isset( $message_data['code'] ) ? $message_data['code'] : '',
+					);
+				}
+			}
+		}
+	}
+
+	// Process warnings
+	$warnings = $check_result->get_warnings();
+	foreach ( $warnings as $file => $lines ) {
+		foreach ( $lines as $line_num => $columns ) {
+			foreach ( $columns as $column_num => $messages ) {
+				foreach ( $messages as $message_data ) {
+					$security_findings[] = array(
+						'file'     => $file,
+						'line'     => intval( $line_num ),
+						'column'   => intval( $column_num ),
+						'type'     => 'WARNING',
+						'severity' => isset( $message_data['severity'] ) ? intval( $message_data['severity'] ) : 5,
+						'message'  => isset( $message_data['message'] ) ? $message_data['message'] : '',
+						'source'   => isset( $message_data['code'] ) ? $message_data['code'] : '',
+					);
+				}
+			}
+		}
+	}
+
+	return $security_findings;
 }
