@@ -26,10 +26,82 @@ The plugin creates one MCP server (`ai-experiments-mpc-server`) with:
 - Observability: `NullMcpObservabilityHandler` (minimal overhead)
 
 ### Abilities Integration
-This plugin will expose WordPress abilities as MCP components. The abilities are registered using the WordPress Abilities API.
+This plugin exposes WordPress abilities as MCP components. The abilities are registered using the WordPress Abilities API and exposed as Tools in the MCP server.
+
+#### Create Post Ability
+A Tool that creates new WordPress blog posts with the provided content.
+
+**Ability ID**: `mcp-server/create-post`
+
+**Purpose**: Creates a new blog post with specified title, content, and status using WordPress post creation functions.
+
+**Input Parameters**:
+- `title` (required, string): The title of the post
+- `content` (required, string): The content of the post. Must be valid block editor markup
+- `status` (optional, string): The status of the post (default: 'draft', enum: ['draft', 'publish'])
+
+**Functionality**:
+- Creates posts using WordPress `wp_insert_post()` function
+- Sanitizes input data for security (title sanitization, content filtering)
+- Sets post author to current user
+- Supports draft and publish status options
+- Returns post URL upon successful creation
+
+**Output Format**: Returns JSON object containing:
+- `url`: The URL of the created post
+
+**Error Handling**: Returns WP_Error objects for:
+- Invalid input data (missing title or content)
+- Post creation failures
+- Permission issues
+
+**Permission Requirements**: User must have `publish_posts` capability
+
+**Integration**: Registered as a Tool in the MCP server's tools array.
+
+#### Plugin List Ability
+A Tool that retrieves a list of all installed WordPress plugins with their names and slugs.
+
+**Ability ID**: `plugin-list/get-plugins`
+
+**Purpose**: Provides a comprehensive list of installed WordPress plugins to enable users to select plugins by name or slug for further operations.
+
+**Input Parameters**: None (no input required)
+
+**Functionality**:
+- Retrieves all installed plugins using WordPress `get_plugins()` function
+- Returns both active and inactive plugins
+- Extracts plugin name and slug/directory information
+- Provides essential plugin metadata for identification
+- No filtering or pagination - returns complete plugin inventory
+- Uses WordPress core functions for reliable plugin detection
+- Handles both single-file and directory-based plugins
+- Detects multisite network-active plugins
+
+**Output Format**: Returns JSON object containing:
+- `success`: Boolean indicating operation success
+- `plugins`: Array of plugin objects with:
+  - `name`: Human-readable plugin name from plugin header
+  - `slug`: Plugin directory/slug identifier  
+  - `file`: Main plugin file path
+  - `status`: Whether plugin is active or inactive
+  - `version`: Plugin version number
+- `error`: Error message if retrieval failed
+
+**Error Handling**: All error cases return JSON responses with error information:
+- WordPress plugin functions not available
+- File system access issues
+- Permission problems reading plugin directories
+- Any other system-level errors accessing plugin data
+
+**Permission Requirements**: User must have `manage_options` capability
+
+**Integration**: Registered as a Tool in the MCP server's tools array.
 
 #### Plugin Security Check Ability
 A Tool that performs security checks on WordPress plugins using the Plugin Check functionality.
+
+**Ability ID**: `plugin-security/check-security`
 
 **Purpose**: Analyzes WordPress plugins for security vulnerabilities and issues using the security category checks from the Plugin Check plugin.
 
@@ -50,49 +122,38 @@ A Tool that performs security checks on WordPress plugins using the Plugin Check
   - XSS vulnerabilities
   - File inclusion/execution security
   - Authentication and authorization flaws
+- Requires WP-CLI and Plugin Check plugin to be available
 
-**Output Format**: Returns JSON-formatted results containing security check findings, including error details, file locations, line numbers, and severity levels.
+**Output Format**: Returns JSON object containing:
+- `success`: Boolean indicating check completion
+- `plugin_slug`: The plugin that was checked
+- `security_findings`: Array of security issues found with:
+  - `file`: File path where issue was found
+  - `line`: Line number of issue
+  - `column`: Column number of issue
+  - `type`: Issue type (ERROR/WARNING)
+  - `severity`: Issue severity level
+  - `message`: Descriptive error message
+  - `source`: Source of the check rule
+- `summary`: Summary object with:
+  - `total_files_checked`: Number of files analyzed
+  - `total_issues`: Total number of issues found
+  - `error_count`: Number of error-level issues
+  - `warning_count`: Number of warning-level issues
+- `error`: Error message if check failed
 
 **Error Handling**: All error cases return JSON responses with error information:
 - Invalid or non-existent plugin slug
 - Plugin Check plugin not available or not installed
+- WP-CLI not available
 - Permission issues accessing plugin files
 - WP-CLI command execution failures
+- JSON parsing errors
 - Any other system-level errors
-Error responses include descriptive error messages and appropriate error codes in JSON format.
 
-**Integration**: Registered as a Tool in the MCP server's tools array to provide executable security analysis functionality. 
+**Permission Requirements**: User must have `manage_options` capability
 
-#### Plugin List Ability
-A Tool that retrieves a list of all installed WordPress plugins with their names and slugs.
-
-**Purpose**: Provides a comprehensive list of installed WordPress plugins to enable users to select plugins by name or slug for further operations.
-
-**Input Parameters**: None (no input required)
-
-**Functionality**:
-- Retrieves all installed plugins using WordPress `get_plugins()` function
-- Returns both active and inactive plugins
-- Extracts plugin name and slug/directory information
-- Provides essential plugin metadata for identification
-- No filtering or pagination - returns complete plugin inventory
-- Uses WordPress core functions for reliable plugin detection
-
-**Output Format**: Returns JSON-formatted array containing plugin information with the following structure for each plugin:
-- `name`: Human-readable plugin name from plugin header
-- `slug`: Plugin directory/slug identifier  
-- `file`: Main plugin file path
-- `status`: Whether plugin is active or inactive
-- `version`: Plugin version number
-
-**Error Handling**: All error cases return JSON responses with error information:
-- WordPress plugin functions not available
-- File system access issues
-- Permission problems reading plugin directories
-- Any other system-level errors accessing plugin data
-Error responses include descriptive error messages in JSON format.
-
-**Integration**: Registered as a Tool in the MCP server's tools array to provide plugin discovery functionality.
+**Integration**: Registered as a Tool in the MCP server's tools array.
 
 ## Development Commands
 
