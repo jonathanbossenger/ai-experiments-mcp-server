@@ -77,12 +77,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/WordPress/mcp-adapter.git",
-                "reference": "8144b9c48ca639bc97cc96da38f8bdd2a596bf37"
+                "reference": "50820c54b22248a20136f597bfc3fbf059079349"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/WordPress/mcp-adapter/zipball/8144b9c48ca639bc97cc96da38f8bdd2a596bf37",
-                "reference": "8144b9c48ca639bc97cc96da38f8bdd2a596bf37",
+                "url": "https://api.github.com/repos/WordPress/mcp-adapter/zipball/50820c54b22248a20136f597bfc3fbf059079349",
+                "reference": "50820c54b22248a20136f597bfc3fbf059079349",
                 "shasum": ""
             },
             "require": {
@@ -170,7 +170,7 @@
                 "source": "https://github.com/wordpress/mcp-adapter",
                 "docs": "https://github.com/wordpress/mcp-adapter/tree/main/docs"
             },
-            "time": "2025-08-14T09:43:20+00:00"
+            "time": "2025-08-20T08:43:34+00:00"
         }
     ],
     "packages-dev": [],
