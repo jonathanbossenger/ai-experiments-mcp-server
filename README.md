@@ -17,6 +17,7 @@ This plugin serves as an AI experiments server, specifically configured to expos
 - **Create Post** - Create new WordPress blog posts with title, content, and status
 - **Plugin List** - Retrieve a comprehensive list of installed WordPress plugins
 - **Plugin Security Check** - Perform security analysis on WordPress plugins using Plugin Check
+- **Site Info** - Retrieve comprehensive information about the WordPress site
 - **Debug Log Management** - Read and clear WordPress debug logs
 
 ### Architecture
@@ -152,7 +153,30 @@ Performs security analysis on WordPress plugins using Plugin Check functionality
 }
 ```
 
-### 4. Debug Log Management
+### 4. Site Info (`site/site-info`)
+
+Retrieves comprehensive information about the WordPress site.
+
+**Parameters:** None
+
+**Permissions:** Requires `manage_options` capability
+
+**Response:**
+```json
+{
+  "site_name": "My WordPress Site",
+  "site_url": "https://example.com",
+  "active_theme": "Twenty Twenty-Four",
+  "active_plugins": [
+    "akismet/akismet.php",
+    "hello-dolly/hello.php"
+  ],
+  "php_version": "8.1.0",
+  "wordpress_version": "6.4.0"
+}
+```
+
+### 5. Debug Log Management
 
 **Read Log (`debug-log/read-log`)**
 - Reads WordPress debug log entries
@@ -174,6 +198,7 @@ ai-experiments-mcp-server/
 │   ├── ability-create-post.php       # Post creation ability
 │   ├── ability-get-plugins.php       # Plugin listing ability
 │   ├── ability-check-security.php    # Security checking ability
+│   ├── ability-site-info.php         # Site information ability
 │   └── ability-debug-log.php         # Debug log management
 ├── vendor/                           # Composer dependencies
 └── CLAUDE.md                         # AI assistant instructions

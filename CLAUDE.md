@@ -163,6 +163,42 @@ A Tool that performs security checks on WordPress plugins using the Plugin Check
 - **Dependency Management**: Validates Plugin Check availability and class loading before execution
 - **No WP-CLI Dependency**: Completely removed WP-CLI requirement, uses direct PHP API calls for better performance and reliability
 
+#### Site Info Ability
+A Tool that retrieves comprehensive information about the WordPress site.
+
+**Ability ID**: `site/site-info`
+
+**Purpose**: Provides essential information about the WordPress site including site details, active theme, plugins, and system versions for diagnostic and informational purposes.
+
+**Input Parameters**: None (no input required)
+
+**Functionality**:
+- Retrieves site name and URL using WordPress `get_bloginfo()` function
+- Gets active theme information using `wp_get_theme()` function
+- Lists all active plugins using `get_option('active_plugins')` function
+- Returns PHP version using `phpversion()` function
+- Returns WordPress version using `get_bloginfo('version')` function
+- Provides comprehensive site overview for diagnostic and informational purposes
+- No filtering or pagination - returns complete site information
+- Uses WordPress core functions for reliable data retrieval
+
+**Output Format**: Returns JSON object containing:
+- `site_name`: Site name from WordPress settings
+- `site_url`: Site URL from WordPress settings
+- `active_theme`: Name of the currently active theme
+- `active_plugins`: Array of active plugin file paths
+- `php_version`: Current PHP version string
+- `wordpress_version`: Current WordPress version string
+
+**Error Handling**: All error cases return JSON responses with error information:
+- WordPress functions not available
+- Permission issues accessing site data
+- Any other system-level errors accessing site information
+
+**Permission Requirements**: User must have `manage_options` capability
+
+**Integration**: Registered as a Tool in the MCP server's tools array.
+
 ## Development Commands
 
 Since this is a Composer-managed WordPress plugin, the following commands are available from the MCP Adapter dependency:
