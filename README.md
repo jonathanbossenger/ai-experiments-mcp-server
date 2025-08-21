@@ -1,7 +1,8 @@
 # AI Experiments MCP Server
 
 > **⚠️ EXPERIMENTAL PLUGIN WARNING**  
-> This is an experimental plugin created for workshop demonstration purposes only. It showcases how WordPress Abilities and the MCP Adapter work together. No care has been put into coding standards, comprehensive security checks, or production best practices. **DO NOT USE IN PRODUCTION ENVIRONMENTS.**
+> This is an experimental plugin created for workshop demonstration purposes only. It showcases how WordPress Abilities and the MCP Adapter work together. No care has been put into coding standards, comprehensive security checks, any sort of architecture patterns, or production best practices. 
+> **DO NOT USE IN PRODUCTION ENVIRONMENTS.**
 
 A WordPress plugin that implements a Model Context Protocol (MCP) server using the WordPress MCP Adapter package. This plugin exposes WordPress abilities through MCP tools, enabling AI systems to interact with WordPress content and functionality.
 
