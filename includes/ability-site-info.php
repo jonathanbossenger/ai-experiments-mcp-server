@@ -1,7 +1,17 @@
 <?php
-add_action( 'abilities_api_init', 'ai_experiments_register_siteinfo_ability' );
-function ai_experiments_register_siteinfo_ability(){
-	wp_register_ability( 'ai-experiments/site-info', array(
+/**
+ * Site Info Ability for AI Experiments MCP Server
+ *
+ * @package AI_Experiments_MCP_Server
+ */
+
+if ( ! defined( 'ABSPATH' ) ) {
+	exit; // Exit if accessed directly.
+}
+
+// Register the Plugin List ability
+add_action( 'abilities_api_init', function(){
+	wp_register_ability( 'site/site-info', array(
 		'label' => __( 'Site Info', 'ai-experiments' ),
 		'description' => __( 'Returns information about this WordPress site', 'ai-experiments' ),
 		'input_schema' => array(),
@@ -27,6 +37,14 @@ function ai_experiments_register_siteinfo_ability(){
 					),
 					'description' => __( 'List of active plugins on the WordPress site', 'ai-experiments' )
 				),
+				'php_version' => array(
+					'type' => 'string',
+					'description' => __( 'The PHP version of the WordPress site', 'ai-experiments' )
+				),
+				'wordpress_version' => array(
+					'type' => 'string',
+					'description' => __( 'The WordPress version of the site', 'ai-experiments' )
+				)
 			),
 		),
 		'execute_callback' => 'ai_experiments_get_siteinfo',
@@ -34,14 +52,15 @@ function ai_experiments_register_siteinfo_ability(){
 			return current_user_can( 'manage_options' );
 		}
 	));
-}
+});
 
 function ai_experiments_get_siteinfo(){
-	$site_info = array(
-		'site_name' => get_bloginfo( 'name' ),
-		'site_url'  => get_bloginfo( 'url' ),
-		'active_theme' => wp_get_theme()->get( 'Name' ),
-		'active_plugins' => get_option( 'active_plugins', array() ),
-	);
+	$site_info = array();
+	$site_info['site_name'] = get_bloginfo( 'name' );
+	$site_info['site_url'] = get_bloginfo( 'url' );
+	$site_info['active_theme'] = wp_get_theme()->get( 'Name' );
+	$site_info['active_plugins'] = get_option( 'active_plugins', array() );
+	$site_info['php_version'] = phpversion();
+	$site_info['wordpress_version'] = get_bloginfo( 'version' );
 	return $site_info;
 }
