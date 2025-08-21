@@ -114,16 +114,33 @@ add_action( 'abilities_api_init', function () {
  * @return array JSON response with debug log contents or error.
  */
 function ai_experiments_read_debug_log( $input ) {
+	if ( defined( 'AI_EXPERIMENTS_DEBUG' ) && AI_EXPERIMENTS_DEBUG ) {
+		error_log( 'AI_EXPERIMENTS_DEBUG_LOG: Starting debug log read with input: ' . print_r( $input, true ) );
+	}
+
 	try {
 		// Get the number of lines to read (default: 100, max: 1000)
 		$lines_to_read = isset( $input['lines'] ) ? (int) $input['lines'] : 100;
 		$lines_to_read = max( 1, min( 1000, $lines_to_read ) ); // Clamp between 1 and 1000
+		
+		if ( defined( 'AI_EXPERIMENTS_DEBUG' ) && AI_EXPERIMENTS_DEBUG ) {
+			error_log( 'AI_EXPERIMENTS_DEBUG_LOG: Lines to read: ' . $lines_to_read );
+		}
 
 		// Determine the debug log file path
 		$debug_log_path = WP_CONTENT_DIR . '/debug.log';
+		
+		if ( defined( 'AI_EXPERIMENTS_DEBUG' ) && AI_EXPERIMENTS_DEBUG ) {
+			error_log( 'AI_EXPERIMENTS_DEBUG_LOG: Debug log path: ' . $debug_log_path );
+		}
 
 		// Check if the debug log file exists
-		if ( ! file_exists( $debug_log_path ) ) {
+		$file_exists = file_exists( $debug_log_path );
+		if ( defined( 'AI_EXPERIMENTS_DEBUG' ) && AI_EXPERIMENTS_DEBUG ) {
+			error_log( 'AI_EXPERIMENTS_DEBUG_LOG: File exists: ' . ( $file_exists ? 'true' : 'false' ) );
+		}
+		
+		if ( ! $file_exists ) {
 			return array(
 				'success'   => false,
 				'error'     => 'Debug log file does not exist at: ' . $debug_log_path,
@@ -132,7 +149,12 @@ function ai_experiments_read_debug_log( $input ) {
 		}
 
 		// Check if the file is readable
-		if ( ! is_readable( $debug_log_path ) ) {
+		$is_readable = is_readable( $debug_log_path );
+		if ( defined( 'AI_EXPERIMENTS_DEBUG' ) && AI_EXPERIMENTS_DEBUG ) {
+			error_log( 'AI_EXPERIMENTS_DEBUG_LOG: File is readable: ' . ( $is_readable ? 'true' : 'false' ) );
+		}
+		
+		if ( ! $is_readable ) {
 			return array(
 				'success'   => false,
 				'error'     => 'Debug log file is not readable: ' . $debug_log_path,
@@ -142,9 +164,16 @@ function ai_experiments_read_debug_log( $input ) {
 
 		// Get file size
 		$file_size = filesize( $debug_log_path );
+		
+		if ( defined( 'AI_EXPERIMENTS_DEBUG' ) && AI_EXPERIMENTS_DEBUG ) {
+			error_log( 'AI_EXPERIMENTS_DEBUG_LOG: File size: ' . $file_size . ' bytes' );
+		}
 
 		// Read the file contents
 		if ( $file_size === 0 ) {
+			if ( defined( 'AI_EXPERIMENTS_DEBUG' ) && AI_EXPERIMENTS_DEBUG ) {
+				error_log( 'AI_EXPERIMENTS_DEBUG_LOG: File is empty, returning empty content' );
+			}
 			return array(
 				'success'        => true,
 				'content'        => '',
@@ -155,6 +184,9 @@ function ai_experiments_read_debug_log( $input ) {
 		}
 
 		// Read the last N lines efficiently
+		if ( defined( 'AI_EXPERIMENTS_DEBUG' ) && AI_EXPERIMENTS_DEBUG ) {
+			error_log( 'AI_EXPERIMENTS_DEBUG_LOG: Calling ai_experiments_read_last_lines()' );
+		}
 		$content = ai_experiments_read_last_lines( $debug_log_path, $lines_to_read );
 		$lines_returned = substr_count( $content, "\n" );
 
@@ -163,6 +195,11 @@ function ai_experiments_read_debug_log( $input ) {
 			$lines_returned = max( 0, $lines_returned );
 		} else {
 			$lines_returned = $lines_returned + 1;
+		}
+		
+		if ( defined( 'AI_EXPERIMENTS_DEBUG' ) && AI_EXPERIMENTS_DEBUG ) {
+			error_log( 'AI_EXPERIMENTS_DEBUG_LOG: Content read successfully, lines returned: ' . $lines_returned );
+			error_log( 'AI_EXPERIMENTS_DEBUG_LOG: Content length: ' . strlen( $content ) . ' characters' );
 		}
 
 		return array(
@@ -174,6 +211,10 @@ function ai_experiments_read_debug_log( $input ) {
 		);
 
 	} catch ( Exception $e ) {
+		if ( defined( 'AI_EXPERIMENTS_DEBUG' ) && AI_EXPERIMENTS_DEBUG ) {
+			error_log( 'AI_EXPERIMENTS_DEBUG_LOG: Exception caught: ' . $e->getMessage() );
+			error_log( 'AI_EXPERIMENTS_DEBUG_LOG: Exception trace: ' . $e->getTraceAsString() );
+		}
 		return array(
 			'success' => false,
 			'error'   => 'Failed to read debug log: ' . $e->getMessage(),
@@ -189,12 +230,25 @@ function ai_experiments_read_debug_log( $input ) {
  * @return array JSON response with clearing status or error.
  */
 function ai_experiments_clear_debug_log( $input ) {
+	if ( defined( 'AI_EXPERIMENTS_DEBUG' ) && AI_EXPERIMENTS_DEBUG ) {
+		error_log( 'AI_EXPERIMENTS_DEBUG_LOG: Starting debug log clear with input: ' . print_r( $input, true ) );
+	}
+
 	try {
 		// Determine the debug log file path
 		$debug_log_path = WP_CONTENT_DIR . '/debug.log';
+		
+		if ( defined( 'AI_EXPERIMENTS_DEBUG' ) && AI_EXPERIMENTS_DEBUG ) {
+			error_log( 'AI_EXPERIMENTS_DEBUG_LOG: Debug log path: ' . $debug_log_path );
+		}
 
 		// Check if the debug log file exists
-		if ( ! file_exists( $debug_log_path ) ) {
+		$file_exists = file_exists( $debug_log_path );
+		if ( defined( 'AI_EXPERIMENTS_DEBUG' ) && AI_EXPERIMENTS_DEBUG ) {
+			error_log( 'AI_EXPERIMENTS_DEBUG_LOG: File exists: ' . ( $file_exists ? 'true' : 'false' ) );
+		}
+		
+		if ( ! $file_exists ) {
 			return array(
 				'success'   => true,
 				'message'   => 'Debug log file does not exist, nothing to clear.',
@@ -204,7 +258,12 @@ function ai_experiments_clear_debug_log( $input ) {
 		}
 
 		// Check if the file is writable
-		if ( ! is_writable( $debug_log_path ) ) {
+		$is_writable = is_writable( $debug_log_path );
+		if ( defined( 'AI_EXPERIMENTS_DEBUG' ) && AI_EXPERIMENTS_DEBUG ) {
+			error_log( 'AI_EXPERIMENTS_DEBUG_LOG: File is writable: ' . ( $is_writable ? 'true' : 'false' ) );
+		}
+		
+		if ( ! $is_writable ) {
 			return array(
 				'success'   => false,
 				'error'     => 'Debug log file is not writable: ' . $debug_log_path,
@@ -214,10 +273,18 @@ function ai_experiments_clear_debug_log( $input ) {
 
 		// Get file size before clearing
 		$previous_size = filesize( $debug_log_path );
+		
+		if ( defined( 'AI_EXPERIMENTS_DEBUG' ) && AI_EXPERIMENTS_DEBUG ) {
+			error_log( 'AI_EXPERIMENTS_DEBUG_LOG: Previous file size: ' . $previous_size . ' bytes' );
+			error_log( 'AI_EXPERIMENTS_DEBUG_LOG: Opening file for truncation' );
+		}
 
 		// Clear the file by truncating it to 0 bytes
 		$file_handle = fopen( $debug_log_path, 'w' );
 		if ( ! $file_handle ) {
+			if ( defined( 'AI_EXPERIMENTS_DEBUG' ) && AI_EXPERIMENTS_DEBUG ) {
+				error_log( 'AI_EXPERIMENTS_DEBUG_LOG: Failed to open file for writing' );
+			}
 			return array(
 				'success'       => false,
 				'error'         => 'Unable to open debug log file for writing: ' . $debug_log_path,
@@ -227,6 +294,10 @@ function ai_experiments_clear_debug_log( $input ) {
 		}
 
 		fclose( $file_handle );
+		
+		if ( defined( 'AI_EXPERIMENTS_DEBUG' ) && AI_EXPERIMENTS_DEBUG ) {
+			error_log( 'AI_EXPERIMENTS_DEBUG_LOG: File cleared successfully' );
+		}
 
 		return array(
 			'success'       => true,
@@ -236,6 +307,10 @@ function ai_experiments_clear_debug_log( $input ) {
 		);
 
 	} catch ( Exception $e ) {
+		if ( defined( 'AI_EXPERIMENTS_DEBUG' ) && AI_EXPERIMENTS_DEBUG ) {
+			error_log( 'AI_EXPERIMENTS_DEBUG_LOG: Exception caught: ' . $e->getMessage() );
+			error_log( 'AI_EXPERIMENTS_DEBUG_LOG: Exception trace: ' . $e->getTraceAsString() );
+		}
 		return array(
 			'success' => false,
 			'error'   => 'Failed to clear debug log: ' . $e->getMessage(),
@@ -252,16 +327,30 @@ function ai_experiments_clear_debug_log( $input ) {
  * @return string Content of the last N lines.
  */
 function ai_experiments_read_last_lines( $file_path, $lines ) {
+	if ( defined( 'AI_EXPERIMENTS_DEBUG' ) && AI_EXPERIMENTS_DEBUG ) {
+		error_log( 'AI_EXPERIMENTS_DEBUG_LOG: Reading last ' . $lines . ' lines from: ' . $file_path );
+	}
+	
 	$file = fopen( $file_path, 'r' );
 	if ( ! $file ) {
+		if ( defined( 'AI_EXPERIMENTS_DEBUG' ) && AI_EXPERIMENTS_DEBUG ) {
+			error_log( 'AI_EXPERIMENTS_DEBUG_LOG: Unable to open file: ' . $file_path );
+		}
 		throw new Exception( 'Unable to open file: ' . $file_path );
 	}
 
 	// Get file size
 	fseek( $file, 0, SEEK_END );
 	$file_size = ftell( $file );
+	
+	if ( defined( 'AI_EXPERIMENTS_DEBUG' ) && AI_EXPERIMENTS_DEBUG ) {
+		error_log( 'AI_EXPERIMENTS_DEBUG_LOG: File size for line reading: ' . $file_size . ' bytes' );
+	}
 
 	if ( $file_size === 0 ) {
+		if ( defined( 'AI_EXPERIMENTS_DEBUG' ) && AI_EXPERIMENTS_DEBUG ) {
+			error_log( 'AI_EXPERIMENTS_DEBUG_LOG: File is empty, returning empty string' );
+		}
 		fclose( $file );
 		return '';
 	}
@@ -289,12 +378,23 @@ function ai_experiments_read_last_lines( $file_path, $lines ) {
 	}
 
 	fclose( $file );
+	
+	if ( defined( 'AI_EXPERIMENTS_DEBUG' ) && AI_EXPERIMENTS_DEBUG ) {
+		error_log( 'AI_EXPERIMENTS_DEBUG_LOG: Found ' . $lines_found . ' lines in content' );
+	}
 
 	// If we have more lines than needed, trim from the beginning
 	if ( $lines_found > $lines ) {
+		if ( defined( 'AI_EXPERIMENTS_DEBUG' ) && AI_EXPERIMENTS_DEBUG ) {
+			error_log( 'AI_EXPERIMENTS_DEBUG_LOG: Trimming content to last ' . $lines . ' lines' );
+		}
 		$content_lines = explode( "\n", $content );
 		$content_lines = array_slice( $content_lines, -$lines );
 		$content = implode( "\n", $content_lines );
+	}
+
+	if ( defined( 'AI_EXPERIMENTS_DEBUG' ) && AI_EXPERIMENTS_DEBUG ) {
+		error_log( 'AI_EXPERIMENTS_DEBUG_LOG: Final content length: ' . strlen( $content ) . ' characters' );
 	}
 
 	return $content;

@@ -86,37 +86,74 @@ add_action( 'abilities_api_init', function () {
  * @return array Result containing post ID and URL.
  */
 function mcp_server_create_post( $input ) {
+	if ( defined( 'AI_EXPERIMENTS_DEBUG' ) && AI_EXPERIMENTS_DEBUG ) {
+		error_log( 'AI_EXPERIMENTS_CREATE_POST: Starting post creation with input: ' . print_r( $input, true ) );
+	}
+
 	// Validate input
 	if ( ! isset( $input['title'], $input['content'] ) ) {
+		if ( defined( 'AI_EXPERIMENTS_DEBUG' ) && AI_EXPERIMENTS_DEBUG ) {
+			error_log( 'AI_EXPERIMENTS_CREATE_POST: Invalid input - missing title or content' );
+		}
 		return array(
 			'success' => false,
 			'error'   => __( 'Invalid input data', 'mcp-server' ),
 		);
 	}
 	
+	$sanitized_title = sanitize_text_field( $input['title'] );
+	$sanitized_content = wp_kses_post( $input['content'] );
+	$sanitized_status = ( isset( $input['status'] ) && in_array( sanitize_text_field( $input['status'] ), array(
+			'draft',
+			'publish'
+		), true ) )
+		? sanitize_text_field( $input['status'] )
+		: 'draft';
+	$current_user_id = get_current_user_id();
+	
+	if ( defined( 'AI_EXPERIMENTS_DEBUG' ) && AI_EXPERIMENTS_DEBUG ) {
+		error_log( 'AI_EXPERIMENTS_CREATE_POST: Sanitized values:' );
+		error_log( 'AI_EXPERIMENTS_CREATE_POST: - Title: ' . $sanitized_title );
+		error_log( 'AI_EXPERIMENTS_CREATE_POST: - Content length: ' . strlen( $sanitized_content ) );
+		error_log( 'AI_EXPERIMENTS_CREATE_POST: - Status: ' . $sanitized_status );
+		error_log( 'AI_EXPERIMENTS_CREATE_POST: - Author ID: ' . $current_user_id );
+	}
+	
 	// Create the post
 	$post_data = array(
-		'post_title'   => sanitize_text_field( $input['title'] ),
-		'post_content' => wp_kses_post( $input['content'] ),
-		'post_status'  => ( isset( $input['status'] ) && in_array( sanitize_text_field( $input['status'] ), array(
-				'draft',
-				'publish'
-			), true ) )
-			? sanitize_text_field( $input['status'] )
-			: 'draft',
-		'post_author'  => get_current_user_id(),
+		'post_title'   => $sanitized_title,
+		'post_content' => $sanitized_content,
+		'post_status'  => $sanitized_status,
+		'post_author'  => $current_user_id,
 	);
-	$post_id   = wp_insert_post( $post_data );
+
+	if ( defined( 'AI_EXPERIMENTS_DEBUG' ) && AI_EXPERIMENTS_DEBUG ) {
+		error_log( 'AI_EXPERIMENTS_CREATE_POST: Calling wp_insert_post()' );
+	}
+	
+	$post_id = wp_insert_post( $post_data );
+	
 	if ( is_wp_error( $post_id ) ) {
+		if ( defined( 'AI_EXPERIMENTS_DEBUG' ) && AI_EXPERIMENTS_DEBUG ) {
+			error_log( 'AI_EXPERIMENTS_CREATE_POST: wp_insert_post() returned WP_Error: ' . $post_id->get_error_message() );
+		}
 		return array(
 			'success' => false,
 			'error'   => __( 'Failed to create post', 'mcp-server' ) . ': ' . $post_id->get_error_message(),
 		);
 	}
 
+	$post_url = get_permalink( $post_id );
+	
+	if ( defined( 'AI_EXPERIMENTS_DEBUG' ) && AI_EXPERIMENTS_DEBUG ) {
+		error_log( 'AI_EXPERIMENTS_CREATE_POST: Post created successfully' );
+		error_log( 'AI_EXPERIMENTS_CREATE_POST: - Post ID: ' . $post_id );
+		error_log( 'AI_EXPERIMENTS_CREATE_POST: - Post URL: ' . $post_url );
+	}
+
 	// Return the result
 	return array(
 		'success' => true,
-		'url'     => get_permalink( $post_id ),
+		'url'     => $post_url,
 	);
 }

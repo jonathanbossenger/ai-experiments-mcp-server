@@ -9,6 +9,11 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
 }
 
+// Define debug constant for conditional logging
+if ( ! defined( 'AI_EXPERIMENTS_DEBUG' ) ) {
+	define( 'AI_EXPERIMENTS_DEBUG', false );
+}
+
 require __DIR__ . '/vendor/autoload.php'; // Ensure you have the autoloader for dependencies
 
 use WP\MCP\Core\McpAdapter;
