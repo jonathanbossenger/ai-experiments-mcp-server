@@ -3,6 +3,7 @@
  * Plugin Name: AI Experiments MCP Server
  * Description: A server for AI experiments using the MCP (Model Context Protocol) architecture.
  * Version: 0.0.1
+ * Requires Plugins: plugin-check
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
