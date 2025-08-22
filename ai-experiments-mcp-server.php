@@ -14,7 +14,12 @@ if ( ! defined( 'AI_EXPERIMENTS_DEBUG' ) ) {
 	define( 'AI_EXPERIMENTS_DEBUG', false );
 }
 
-require __DIR__ . '/vendor/autoload.php'; // Ensure you have the autoloader for dependencies
+if ( file_exists( __DIR__ . '/vendor/autoload.php' ) ) {
+    require __DIR__ . '/vendor/autoload.php'; // Ensure you have the autoloader for dependencies
+} else {
+    error_log( 'AI Experiments Autoloader not found. Please run "composer install" in the plugin directory.' );
+    exit;
+}
 
 use WP\MCP\Core\McpAdapter;
 use WP\MCP\Infrastructure\ErrorHandling\ErrorLogMcpErrorHandler;
