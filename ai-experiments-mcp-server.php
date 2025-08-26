@@ -5,7 +5,6 @@
  * Version: 0.0.1
  * Requires Plugins: plugin-check
  */
-
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
 }
@@ -15,17 +14,6 @@ if ( ! defined( 'AI_EXPERIMENTS_DEBUG' ) ) {
 	define( 'AI_EXPERIMENTS_DEBUG', false );
 }
 
-if ( ! file_exists( __DIR__ . '/vendor/autoload.php' ) ) {
-    error_log( 'AI Experiments Autoloader not found. Please run "composer install" in the plugin directory.' );
-    exit;
-}
-require __DIR__ . '/vendor/autoload.php'; // Ensure you have the autoloader for dependencies
-
-use WP\MCP\Core\McpAdapter;
-use WP\MCP\Infrastructure\ErrorHandling\ErrorLogMcpErrorHandler;
-use WP\MCP\Infrastructure\Observability\NullMcpObservabilityHandler;
-use WP\MCP\Transport\Http\RestTransport;
-
 // Include ability files
 require_once __DIR__ . '/includes/ability-create-post.php';
 require_once __DIR__ . '/includes/ability-get-plugins.php';
@@ -33,10 +21,10 @@ require_once __DIR__ . '/includes/ability-check-security.php';
 require_once __DIR__ . '/includes/ability-debug-log.php';
 require_once __DIR__ . '/includes/ability-site-info.php';
 
-// Get the adapter instance
-$adapter = McpAdapter::instance();
-
-// Hook into the initialization
+/*
+ * Hook into the MCP adapter initialization to create a custom MCP server.
+ * mcp_adapter_init accepts a single parameter: the MCP adapter instance.
+ */
 add_action( 'mcp_adapter_init', function ( $adapter ) {
 	// MCP Server configuration
 	$adapter->create_server(
@@ -47,10 +35,10 @@ add_action( 'mcp_adapter_init', function ( $adapter ) {
 		'Custom AI Experiments MCP Server',     // Server description
 		'v1.0.0',                               // Server version
 		array(                                  // Transport methods
-			RestTransport::class,
+            \WP\MCP\Transport\Http\RestTransport::class,
 		),
-		ErrorLogMcpErrorHandler::class,         // Error handler
-		NullMcpObservabilityHandler::class,     // Observability handler
+        \WP\MCP\Infrastructure\ErrorHandling\ErrorLogMcpErrorHandler::class,         // Error handler
+        \WP\MCP\Infrastructure\Observability\NullMcpObservabilityHandler::class,     // Observability handler
 		// Abilities to expose as tools
 		array(
 			'site/site-info',
