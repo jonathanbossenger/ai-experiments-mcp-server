@@ -120,7 +120,7 @@ function ai_experiments_define_security_check_runner() {
 // Register the Plugin Security Check ability
 add_action( 'abilities_api_init', function () {
 	wp_register_ability(
-		'plugin-security/check-security',
+		'plugin-check/check-security',
 		array(
 			'label'               => __( 'Plugin Security Check', 'ai-experiments-mcp-server' ),
 			'description'         => __( 'Analyzes WordPress plugins for security vulnerabilities and issues using Plugin Check security category checks.', 'ai-experiments-mcp-server' ),

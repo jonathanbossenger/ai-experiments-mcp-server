@@ -12,7 +12,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 // Register the Debug Log Reading ability
 add_action( 'abilities_api_init', function () {
 	wp_register_ability(
-		'debug-log/read-log',
+		'debug/read-log',
 		array(
 			'label'               => __( 'Debug Log Reader', 'ai-experiments-mcp-server' ),
 			'description'         => __( 'Reads the contents of the WordPress debug.log file from wp-content directory.', 'ai-experiments-mcp-server' ),
@@ -68,7 +68,7 @@ add_action( 'abilities_api_init', function () {
 // Register the Debug Log Clear ability
 add_action( 'abilities_api_init', function () {
 	wp_register_ability(
-		'debug-log/clear-log',
+		'debug/clear-log',
 		array(
 			'label'               => __( 'Debug Log Clearer', 'ai-experiments-mcp-server' ),
 			'description'         => __( 'Clears the contents of the WordPress debug.log file from wp-content directory.', 'ai-experiments-mcp-server' ),

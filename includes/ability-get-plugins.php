@@ -12,7 +12,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 // Register the Plugin List ability
 add_action( 'abilities_api_init', function () {
 	wp_register_ability(
-		'plugin-list/get-plugins',
+		'plugins/get-plugins',
 		array(
 			'label'               => __( 'Plugin List', 'ai-experiments-mcp-server' ),
 			'description'         => __( 'Retrieves a list of all installed WordPress plugins with their names and slugs.', 'ai-experiments-mcp-server' ),

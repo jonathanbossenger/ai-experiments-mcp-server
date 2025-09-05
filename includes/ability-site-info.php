@@ -9,7 +9,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
 }
 
-// Register the Plugin List ability
+// Register the Site Info ability
 add_action( 'abilities_api_init', function(){
 	wp_register_ability( 'site/site-info', array(
 		'label' => __( 'Site Info', 'ai-experiments' ),
@@ -50,7 +50,11 @@ add_action( 'abilities_api_init', function(){
 		'execute_callback' => 'ai_experiments_get_siteinfo',
 		'permission_callback' => function( $input ) {
 			return current_user_can( 'manage_options' );
-		}
+		},
+        'meta' => array(
+            'mimeType' => 'application/json',
+            'uri'      => 'site://wordpress/site-info',
+        ),
 	));
 });
 

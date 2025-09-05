@@ -31,7 +31,7 @@ function ai_experiments_wp_error_to_array( $wp_error, $context = '' ) {
 
 // Register an ability to create a post
 add_action( 'abilities_api_init', function () {
-	wp_register_ability( 'mcp-server/create-post', array(
+	wp_register_ability( 'post/create-post', array(
 		'label'               => __( 'Create Post', 'mcp-server' ),
 		'description'         => __( 'Creates a new blog post with the provided content', 'mcp-server' ),
 		'input_schema'        => array(
