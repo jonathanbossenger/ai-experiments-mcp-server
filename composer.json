@@ -9,14 +9,9 @@
             "email": "jonathanbossenger@gmail.com"
         }
     ],
-    "repositories": [
-        {
-            "type": "vcs",
-            "url": "https://github.com/WordPress/mcp-adapter"
-        }
-    ],
     "require": {
-        "wordpress/mcp-adapter": "dev-trunk"
+        "wordpress/abilities-api": "^0.1.1",
+        "wordpress/mcp-adapter": "^0.1.0"
     },
     "config": {
         "allow-plugins": {
