@@ -1,8 +1,8 @@
 <?php
 /**
- * Plugin Name: AI Experiments MCP Server
- * Description: A server for AI experiments using the MCP (Model Context Protocol) architecture.
- * Version: 0.0.1
+ * Plugin Name: WP MCP Server Demo
+ * Description: Implements a basic MCP server using Abilities API and the MCP Adapter.
+ * Version: 1.0.0
  * Requires Plugins: plugin-check
  */
 if ( ! defined( 'ABSPATH' ) ) {
@@ -16,8 +16,8 @@ if ( file_exists( __DIR__ . '/vendor/autoload.php' ) ) {
 }
 
 // Define debug constant for conditional logging
-if ( ! defined( 'AI_EXPERIMENTS_DEBUG' ) ) {
-	define( 'AI_EXPERIMENTS_DEBUG', false );
+if ( ! defined( 'WP_MCP_SERVER_DEBUG' ) ) {
+	define( 'WP_MCP_SERVER_DEBUG', false );
 }
 
 // Include ability files
@@ -36,8 +36,8 @@ $adapter = WP\MCP\Core\McpAdapter::instance();
 add_action( 'mcp_adapter_init', function ( $adapter ) {
 	// MCP Server configuration
 	$adapter->create_server(
-		'ai-experiments',                       // Unique server identifier
-		'ai-experiments',                       // REST API namespace
+		'wp-mcp-server',                       // Unique server identifier
+		'wp-mcp-server',                       // REST API namespace
 		'mcp',                                  // REST API route
 		'AI Experiments MCP Server',            // Server name
 		'Custom AI Experiments MCP Server',     // Server description

@@ -10,7 +10,7 @@ This is a WordPress plugin that implements a Model Context Protocol (MCP) server
 
 The plugin follows a minimal architecture leveraging the `wordpress/mcp-adapter` package:
 
-- **Main Plugin File**: `ai-experiments-mcp-server.php` - Contains the plugin bootstrap and server configuration
+- **Main Plugin File**: `wp-mcp-server-demo.php` - Contains the plugin bootstrap and server configuration
 - **Dependencies**: Managed via Composer with the `wordpress/mcp-adapter` package as the core dependency
 - **Namespace Structure**: Uses `WP\MCP\*` namespaces from the adapter package
 - **Server Configuration**: Single MCP server with REST transport, error handling, and observability
@@ -18,8 +18,8 @@ The plugin follows a minimal architecture leveraging the `wordpress/mcp-adapter`
 ## Key Components
 
 ### MCP Server Configuration
-The plugin creates one MCP server (`ai-experiments-mpc-server`) with:
-- REST API namespace: `ai-experiments`  
+The plugin creates one MCP server (`wp-mcp-server`) with:
+- REST API namespace: `wp-mcp-server`  
 - Route: `mcp`
 - Transport: `RestTransport` (HTTP-based MCP communication)
 - Error Handler: `ErrorLogMcpErrorHandler` (logs to WordPress error log)
@@ -31,7 +31,7 @@ This plugin exposes WordPress abilities as MCP components. The abilities are reg
 #### Create Post Ability
 A Tool that creates new WordPress blog posts with the provided content.
 
-**Ability ID**: `mcp-server/create-post`
+**Ability ID**: `post/create-post`
 
 **Purpose**: Creates a new blog post with specified title, content, and status using WordPress post creation functions.
 
@@ -62,7 +62,7 @@ A Tool that creates new WordPress blog posts with the provided content.
 #### Plugin List Ability
 A Tool that retrieves a list of all installed WordPress plugins with their names and slugs.
 
-**Ability ID**: `plugin-list/get-plugins`
+**Ability ID**: `plugins/get-plugins`
 
 **Purpose**: Provides a comprehensive list of installed WordPress plugins to enable users to select plugins by name or slug for further operations.
 
@@ -101,7 +101,7 @@ A Tool that retrieves a list of all installed WordPress plugins with their names
 #### Plugin Security Check Ability
 A Tool that performs security checks on WordPress plugins using the Plugin Check functionality.
 
-**Ability ID**: `plugin-security/check-security`
+**Ability ID**: `plugin-check/check-security`
 
 **Purpose**: Analyzes WordPress plugins for security vulnerabilities and issues using the security category checks from the Plugin Check plugin.
 
@@ -198,6 +198,38 @@ A Tool that retrieves comprehensive information about the WordPress site.
 **Permission Requirements**: User must have `manage_options` capability
 
 **Integration**: Registered as a Tool in the MCP server's tools array.
+
+#### Debug Log Management Abilities
+Tools that manage WordPress debug logs for troubleshooting and monitoring.
+
+**Read Log Ability ID**: `debug/read-log`
+**Clear Log Ability ID**: `debug/clear-log`
+
+**Purpose**: Provides access to WordPress debug log functionality, allowing reading of debug entries and clearing of log files for maintenance.
+
+**Input Parameters**: None (no input required for either tool)
+
+**Functionality**:
+- **Read Log**: Retrieves recent entries from WordPress debug log file
+- **Clear Log**: Empties the WordPress debug log file
+- Uses WordPress `WP_DEBUG_LOG` and debug log file location
+- Provides essential debugging information for troubleshooting
+- Handles log file access and permission management
+- Safe log file operations with error handling
+
+**Output Format**: 
+- **Read Log**: Returns JSON object with log entries array
+- **Clear Log**: Returns JSON object with success/error status
+
+**Error Handling**: All error cases return JSON responses with error information:
+- Debug log file not accessible
+- Permission issues accessing log files
+- File system errors during log operations
+- WordPress debug logging not enabled
+
+**Permission Requirements**: User must have `manage_options` capability
+
+**Integration**: Both abilities registered as Tools in the MCP server's tools array.
 
 ## Development Commands
 

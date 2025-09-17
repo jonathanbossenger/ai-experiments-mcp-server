@@ -1,14 +1,14 @@
-# AI Experiments MCP Server
+# WP MCP Server Demo
 
 > **⚠️ EXPERIMENTAL PLUGIN WARNING**  
 > This is an experimental plugin created for workshop demonstration purposes only. It showcases how WordPress Abilities and the MCP Adapter work together. No care has been put into coding standards, comprehensive security checks, any sort of architecture patterns, or production best practices. 
 > **DO NOT USE IN PRODUCTION ENVIRONMENTS.**
 
-A WordPress plugin that implements a Model Context Protocol (MCP) server using the WordPress MCP Adapter package. This plugin exposes WordPress abilities through MCP tools, enabling AI systems to interact with WordPress content and functionality.
+A WordPress plugin that implements a Model Context Protocol (MCP) server using the WordPress Abilities API and the MCP Adapter. This plugin exposes WordPress abilities through MCP tools, enabling AI systems to interact with WordPress content and functionality.
 
 ## Overview
 
-This plugin serves as an AI experiments server, specifically configured to expose WordPress abilities through MCP (Model Context Protocol) tools, resources, and prompts. It leverages the `wordpress/mcp-adapter` package to provide a seamless integration between WordPress and AI systems.
+This plugin serves as an experimental MCP server, specifically configured to expose WordPress abilities through MCP (Model Context Protocol) tools, resources, and prompts. 
 
 ## Features
 
@@ -33,48 +33,44 @@ This plugin serves as an AI experiments server, specifically configured to expos
 - WordPress 5.0 or higher
 - PHP 7.4 or higher
 - Composer for dependency management
-- [WordPress Abilities API](https://github.com/WordPress/abilities-api) feature plugin (scheduled for WordPress 6.9)
 - Plugin Check plugin (for security checks)
 
 ## Installation
 
-1. Install the WordPress Abilities API feature plugin:
-```bash
-# Download and install from GitHub
-cd wp-content/plugins/
-git clone https://github.com/WordPress/abilities-api.git
-wp plugin activate abilities-api
-```
-
-2. Clone this repository into your WordPress plugins directory:
+1. Clone this repository into your WordPress plugins directory:
 ```bash
 cd wp-content/plugins/
-git clone https://github.com/jonathanbossenger/ai-experiments-mcp-server.git
+git clone https://github.com/jonathanbossenger/wp-mcp-server-demo.git
 ```
 
-3. Install dependencies:
+2. Install dependencies:
 ```bash
-cd ai-experiments-mcp-server
+cd wp-mcp-server-demo
 composer install
 ```
 
-4. Activate the plugin through the WordPress admin or WP-CLI:
+3. Install and activate the Plugin Check plugin (required for security checks):
 ```bash
-wp plugin activate ai-experiments-mcp-server
+wp plugin install plugin-check --activate
 ```
 
-**Note**: The Abilities API is scheduled for inclusion in WordPress 6.9. Until then, the feature plugin must be installed and activated for this MCP server to function properly.
+4. Activate this plugin through the WordPress admin or WP-CLI:
+```bash
+wp plugin activate wp-mcp-server-demo
+```
+
+**Note**: The WordPress Abilities API is included as a Composer dependency and will be automatically installed when you run `composer install`.
 
 ## API Endpoints
 
 Once activated, the plugin exposes MCP endpoints at:
 ```
-/wp-json/ai-experiments/mcp/
+/wp-json/wp-mcp-server/mcp/
 ```
 
 ## Available Tools
 
-### 1. Create Post (`mcp-server/create-post`)
+### 1. Create Post (`post/create-post`)
 
 Creates new WordPress blog posts with specified content.
 
@@ -93,7 +89,7 @@ Creates new WordPress blog posts with specified content.
 }
 ```
 
-### 2. Plugin List (`plugin-list/get-plugins`)
+### 2. Plugin List (`plugins/get-plugins`)
 
 Retrieves a list of all installed WordPress plugins with metadata.
 
@@ -117,7 +113,7 @@ Retrieves a list of all installed WordPress plugins with metadata.
 }
 ```
 
-### 3. Plugin Security Check (`plugin-security/check-security`)
+### 3. Plugin Security Check (`plugin-check/check-security`)
 
 Performs security analysis on WordPress plugins using Plugin Check functionality.
 
@@ -178,10 +174,10 @@ Retrieves comprehensive information about the WordPress site.
 
 ### 5. Debug Log Management
 
-**Read Log (`debug-log/read-log`)**
+**Read Log (`debug/read-log`)**
 - Reads WordPress debug log entries
 
-**Clear Log (`debug-log/clear-log`)**  
+**Clear Log (`debug/clear-log`)**  
 - Clears the WordPress debug log
 
 **Permissions:** Requires `manage_options` capability
@@ -191,8 +187,8 @@ Retrieves comprehensive information about the WordPress site.
 ### Project Structure
 
 ```
-ai-experiments-mcp-server/
-├── ai-experiments-mcp-server.php    # Main plugin file
+wp-mcp-server-demo/
+├── wp-mcp-server-demo.php           # Main plugin file
 ├── composer.json                     # Dependencies
 ├── includes/                         # Ability implementations
 │   ├── ability-create-post.php       # Post creation ability
@@ -202,56 +198,6 @@ ai-experiments-mcp-server/
 │   └── ability-debug-log.php         # Debug log management
 ├── vendor/                           # Composer dependencies
 └── CLAUDE.md                         # AI assistant instructions
-```
-
-### Adding New Abilities
-
-To add new WordPress abilities as MCP tools:
-
-1. Create a new ability file in the `includes/` directory
-2. Register the ability using the WordPress Abilities API
-3. Add the ability identifier to the tools array in the main plugin file
-
-Example ability registration:
-```php
-add_action( 'abilities_api_init', function () {
-    wp_register_ability( 'your-ability/action-name', array(
-        'label' => __( 'Your Ability', 'ai-experiments-mcp-server' ),
-        'description' => __( 'Description of what this ability does', 'ai-experiments-mcp-server' ),
-        'input_schema' => array(/* JSON schema for input */),
-        'output_schema' => array(/* JSON schema for output */),
-        'execute_callback' => 'your_callback_function',
-        'permission_callback' => function() {
-            return current_user_can( 'required_capability' );
-        }
-    ));
-});
-```
-
-### Development Commands
-
-**Install/Update Dependencies:**
-```bash
-composer install
-composer update
-```
-
-**Code Standards (from MCP Adapter):**
-```bash
-# Check coding standards
-vendor/bin/phpcs --standard=vendor/wordpress/mcp-adapter/phpcs.xml.dist src/
-
-# Auto-fix coding standards
-vendor/bin/phpcbf --standard=vendor/wordpress/mcp-adapter/phpcs.xml.dist src/
-```
-
-**Testing (from MCP Adapter):**
-```bash
-# Run all tests
-vendor/bin/phpunit --configuration vendor/wordpress/mcp-adapter/phpunit.xml.dist
-
-# Run specific test suites
-vendor/bin/phpunit --configuration vendor/wordpress/mcp-adapter/phpunit.xml.dist --testsuite mcp-adapter
 ```
 
 ## Security
@@ -282,6 +228,8 @@ Email: jonathanbossenger@gmail.com
 ## Dependencies
 
 - [WordPress MCP Adapter](https://github.com/WordPress/mcp-adapter) - Core MCP functionality for WordPress
+- [WordPress Abilities API](https://github.com/WordPress/abilities-api) - Framework for defining and managing abilities in WordPress
+- [Plugin Check](https://wordpress.org/plugins/plugin-check/) - Plugin for performing security checks on WordPress plugins
 
 ## Support
 

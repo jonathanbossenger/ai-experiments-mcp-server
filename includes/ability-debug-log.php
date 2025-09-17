@@ -114,8 +114,8 @@ add_action( 'abilities_api_init', function () {
  * @return array JSON response with debug log contents or error.
  */
 function ai_experiments_read_debug_log( $input ) {
-	if ( defined( 'AI_EXPERIMENTS_DEBUG' ) && AI_EXPERIMENTS_DEBUG ) {
-		error_log( 'AI_EXPERIMENTS_DEBUG_LOG: Starting debug log read with input: ' . print_r( $input, true ) );
+	if ( defined( 'WP_MCP_SERVER_DEBUG' ) && WP_MCP_SERVER_DEBUG ) {
+		error_log( 'WP_MCP_SERVER_DEBUG_LOG: Starting debug log read with input: ' . print_r( $input, true ) );
 	}
 
 	try {
@@ -123,21 +123,21 @@ function ai_experiments_read_debug_log( $input ) {
 		$lines_to_read = isset( $input['lines'] ) ? (int) $input['lines'] : 100;
 		$lines_to_read = max( 1, min( 1000, $lines_to_read ) ); // Clamp between 1 and 1000
 		
-		if ( defined( 'AI_EXPERIMENTS_DEBUG' ) && AI_EXPERIMENTS_DEBUG ) {
-			error_log( 'AI_EXPERIMENTS_DEBUG_LOG: Lines to read: ' . $lines_to_read );
+		if ( defined( 'WP_MCP_SERVER_DEBUG' ) && WP_MCP_SERVER_DEBUG ) {
+			error_log( 'WP_MCP_SERVER_DEBUG_LOG: Lines to read: ' . $lines_to_read );
 		}
 
 		// Determine the debug log file path
 		$debug_log_path = WP_CONTENT_DIR . '/debug.log';
 		
-		if ( defined( 'AI_EXPERIMENTS_DEBUG' ) && AI_EXPERIMENTS_DEBUG ) {
-			error_log( 'AI_EXPERIMENTS_DEBUG_LOG: Debug log path: ' . $debug_log_path );
+		if ( defined( 'WP_MCP_SERVER_DEBUG' ) && WP_MCP_SERVER_DEBUG ) {
+			error_log( 'WP_MCP_SERVER_DEBUG_LOG: Debug log path: ' . $debug_log_path );
 		}
 
 		// Check if the debug log file exists
 		$file_exists = file_exists( $debug_log_path );
-		if ( defined( 'AI_EXPERIMENTS_DEBUG' ) && AI_EXPERIMENTS_DEBUG ) {
-			error_log( 'AI_EXPERIMENTS_DEBUG_LOG: File exists: ' . ( $file_exists ? 'true' : 'false' ) );
+		if ( defined( 'WP_MCP_SERVER_DEBUG' ) && WP_MCP_SERVER_DEBUG ) {
+			error_log( 'WP_MCP_SERVER_DEBUG_LOG: File exists: ' . ( $file_exists ? 'true' : 'false' ) );
 		}
 		
 		if ( ! $file_exists ) {
@@ -150,8 +150,8 @@ function ai_experiments_read_debug_log( $input ) {
 
 		// Check if the file is readable
 		$is_readable = is_readable( $debug_log_path );
-		if ( defined( 'AI_EXPERIMENTS_DEBUG' ) && AI_EXPERIMENTS_DEBUG ) {
-			error_log( 'AI_EXPERIMENTS_DEBUG_LOG: File is readable: ' . ( $is_readable ? 'true' : 'false' ) );
+		if ( defined( 'WP_MCP_SERVER_DEBUG' ) && WP_MCP_SERVER_DEBUG ) {
+			error_log( 'WP_MCP_SERVER_DEBUG_LOG: File is readable: ' . ( $is_readable ? 'true' : 'false' ) );
 		}
 		
 		if ( ! $is_readable ) {
@@ -165,14 +165,14 @@ function ai_experiments_read_debug_log( $input ) {
 		// Get file size
 		$file_size = filesize( $debug_log_path );
 		
-		if ( defined( 'AI_EXPERIMENTS_DEBUG' ) && AI_EXPERIMENTS_DEBUG ) {
-			error_log( 'AI_EXPERIMENTS_DEBUG_LOG: File size: ' . $file_size . ' bytes' );
+		if ( defined( 'WP_MCP_SERVER_DEBUG' ) && WP_MCP_SERVER_DEBUG ) {
+			error_log( 'WP_MCP_SERVER_DEBUG_LOG: File size: ' . $file_size . ' bytes' );
 		}
 
 		// Read the file contents
 		if ( $file_size === 0 ) {
-			if ( defined( 'AI_EXPERIMENTS_DEBUG' ) && AI_EXPERIMENTS_DEBUG ) {
-				error_log( 'AI_EXPERIMENTS_DEBUG_LOG: File is empty, returning empty content' );
+			if ( defined( 'WP_MCP_SERVER_DEBUG' ) && WP_MCP_SERVER_DEBUG ) {
+				error_log( 'WP_MCP_SERVER_DEBUG_LOG: File is empty, returning empty content' );
 			}
 			return array(
 				'success'        => true,
@@ -184,8 +184,8 @@ function ai_experiments_read_debug_log( $input ) {
 		}
 
 		// Read the last N lines efficiently
-		if ( defined( 'AI_EXPERIMENTS_DEBUG' ) && AI_EXPERIMENTS_DEBUG ) {
-			error_log( 'AI_EXPERIMENTS_DEBUG_LOG: Calling ai_experiments_read_last_lines()' );
+		if ( defined( 'WP_MCP_SERVER_DEBUG' ) && WP_MCP_SERVER_DEBUG ) {
+			error_log( 'WP_MCP_SERVER_DEBUG_LOG: Calling ai_experiments_read_last_lines()' );
 		}
 		$content = ai_experiments_read_last_lines( $debug_log_path, $lines_to_read );
 		$lines_returned = substr_count( $content, "\n" );
@@ -197,9 +197,9 @@ function ai_experiments_read_debug_log( $input ) {
 			$lines_returned = $lines_returned + 1;
 		}
 		
-		if ( defined( 'AI_EXPERIMENTS_DEBUG' ) && AI_EXPERIMENTS_DEBUG ) {
-			error_log( 'AI_EXPERIMENTS_DEBUG_LOG: Content read successfully, lines returned: ' . $lines_returned );
-			error_log( 'AI_EXPERIMENTS_DEBUG_LOG: Content length: ' . strlen( $content ) . ' characters' );
+		if ( defined( 'WP_MCP_SERVER_DEBUG' ) && WP_MCP_SERVER_DEBUG ) {
+			error_log( 'WP_MCP_SERVER_DEBUG_LOG: Content read successfully, lines returned: ' . $lines_returned );
+			error_log( 'WP_MCP_SERVER_DEBUG_LOG: Content length: ' . strlen( $content ) . ' characters' );
 		}
 
 		return array(
@@ -211,9 +211,9 @@ function ai_experiments_read_debug_log( $input ) {
 		);
 
 	} catch ( Exception $e ) {
-		if ( defined( 'AI_EXPERIMENTS_DEBUG' ) && AI_EXPERIMENTS_DEBUG ) {
-			error_log( 'AI_EXPERIMENTS_DEBUG_LOG: Exception caught: ' . $e->getMessage() );
-			error_log( 'AI_EXPERIMENTS_DEBUG_LOG: Exception trace: ' . $e->getTraceAsString() );
+		if ( defined( 'WP_MCP_SERVER_DEBUG' ) && WP_MCP_SERVER_DEBUG ) {
+			error_log( 'WP_MCP_SERVER_DEBUG_LOG: Exception caught: ' . $e->getMessage() );
+			error_log( 'WP_MCP_SERVER_DEBUG_LOG: Exception trace: ' . $e->getTraceAsString() );
 		}
 		return array(
 			'success' => false,
@@ -230,22 +230,22 @@ function ai_experiments_read_debug_log( $input ) {
  * @return array JSON response with clearing status or error.
  */
 function ai_experiments_clear_debug_log( $input ) {
-	if ( defined( 'AI_EXPERIMENTS_DEBUG' ) && AI_EXPERIMENTS_DEBUG ) {
-		error_log( 'AI_EXPERIMENTS_DEBUG_LOG: Starting debug log clear with input: ' . print_r( $input, true ) );
+	if ( defined( 'WP_MCP_SERVER_DEBUG' ) && WP_MCP_SERVER_DEBUG ) {
+		error_log( 'WP_MCP_SERVER_DEBUG_LOG: Starting debug log clear with input: ' . print_r( $input, true ) );
 	}
 
 	try {
 		// Determine the debug log file path
 		$debug_log_path = WP_CONTENT_DIR . '/debug.log';
 		
-		if ( defined( 'AI_EXPERIMENTS_DEBUG' ) && AI_EXPERIMENTS_DEBUG ) {
-			error_log( 'AI_EXPERIMENTS_DEBUG_LOG: Debug log path: ' . $debug_log_path );
+		if ( defined( 'WP_MCP_SERVER_DEBUG' ) && WP_MCP_SERVER_DEBUG ) {
+			error_log( 'WP_MCP_SERVER_DEBUG_LOG: Debug log path: ' . $debug_log_path );
 		}
 
 		// Check if the debug log file exists
 		$file_exists = file_exists( $debug_log_path );
-		if ( defined( 'AI_EXPERIMENTS_DEBUG' ) && AI_EXPERIMENTS_DEBUG ) {
-			error_log( 'AI_EXPERIMENTS_DEBUG_LOG: File exists: ' . ( $file_exists ? 'true' : 'false' ) );
+		if ( defined( 'WP_MCP_SERVER_DEBUG' ) && WP_MCP_SERVER_DEBUG ) {
+			error_log( 'WP_MCP_SERVER_DEBUG_LOG: File exists: ' . ( $file_exists ? 'true' : 'false' ) );
 		}
 		
 		if ( ! $file_exists ) {
@@ -259,8 +259,8 @@ function ai_experiments_clear_debug_log( $input ) {
 
 		// Check if the file is writable
 		$is_writable = is_writable( $debug_log_path );
-		if ( defined( 'AI_EXPERIMENTS_DEBUG' ) && AI_EXPERIMENTS_DEBUG ) {
-			error_log( 'AI_EXPERIMENTS_DEBUG_LOG: File is writable: ' . ( $is_writable ? 'true' : 'false' ) );
+		if ( defined( 'WP_MCP_SERVER_DEBUG' ) && WP_MCP_SERVER_DEBUG ) {
+			error_log( 'WP_MCP_SERVER_DEBUG_LOG: File is writable: ' . ( $is_writable ? 'true' : 'false' ) );
 		}
 		
 		if ( ! $is_writable ) {
@@ -274,16 +274,16 @@ function ai_experiments_clear_debug_log( $input ) {
 		// Get file size before clearing
 		$previous_size = filesize( $debug_log_path );
 		
-		if ( defined( 'AI_EXPERIMENTS_DEBUG' ) && AI_EXPERIMENTS_DEBUG ) {
-			error_log( 'AI_EXPERIMENTS_DEBUG_LOG: Previous file size: ' . $previous_size . ' bytes' );
-			error_log( 'AI_EXPERIMENTS_DEBUG_LOG: Opening file for truncation' );
+		if ( defined( 'WP_MCP_SERVER_DEBUG' ) && WP_MCP_SERVER_DEBUG ) {
+			error_log( 'WP_MCP_SERVER_DEBUG_LOG: Previous file size: ' . $previous_size . ' bytes' );
+			error_log( 'WP_MCP_SERVER_DEBUG_LOG: Opening file for truncation' );
 		}
 
 		// Clear the file by truncating it to 0 bytes
 		$file_handle = fopen( $debug_log_path, 'w' );
 		if ( ! $file_handle ) {
-			if ( defined( 'AI_EXPERIMENTS_DEBUG' ) && AI_EXPERIMENTS_DEBUG ) {
-				error_log( 'AI_EXPERIMENTS_DEBUG_LOG: Failed to open file for writing' );
+			if ( defined( 'WP_MCP_SERVER_DEBUG' ) && WP_MCP_SERVER_DEBUG ) {
+				error_log( 'WP_MCP_SERVER_DEBUG_LOG: Failed to open file for writing' );
 			}
 			return array(
 				'success'       => false,
@@ -295,8 +295,8 @@ function ai_experiments_clear_debug_log( $input ) {
 
 		fclose( $file_handle );
 		
-		if ( defined( 'AI_EXPERIMENTS_DEBUG' ) && AI_EXPERIMENTS_DEBUG ) {
-			error_log( 'AI_EXPERIMENTS_DEBUG_LOG: File cleared successfully' );
+		if ( defined( 'WP_MCP_SERVER_DEBUG' ) && WP_MCP_SERVER_DEBUG ) {
+			error_log( 'WP_MCP_SERVER_DEBUG_LOG: File cleared successfully' );
 		}
 
 		return array(
@@ -307,9 +307,9 @@ function ai_experiments_clear_debug_log( $input ) {
 		);
 
 	} catch ( Exception $e ) {
-		if ( defined( 'AI_EXPERIMENTS_DEBUG' ) && AI_EXPERIMENTS_DEBUG ) {
-			error_log( 'AI_EXPERIMENTS_DEBUG_LOG: Exception caught: ' . $e->getMessage() );
-			error_log( 'AI_EXPERIMENTS_DEBUG_LOG: Exception trace: ' . $e->getTraceAsString() );
+		if ( defined( 'WP_MCP_SERVER_DEBUG' ) && WP_MCP_SERVER_DEBUG ) {
+			error_log( 'WP_MCP_SERVER_DEBUG_LOG: Exception caught: ' . $e->getMessage() );
+			error_log( 'WP_MCP_SERVER_DEBUG_LOG: Exception trace: ' . $e->getTraceAsString() );
 		}
 		return array(
 			'success' => false,
@@ -327,14 +327,14 @@ function ai_experiments_clear_debug_log( $input ) {
  * @return string Content of the last N lines.
  */
 function ai_experiments_read_last_lines( $file_path, $lines ) {
-	if ( defined( 'AI_EXPERIMENTS_DEBUG' ) && AI_EXPERIMENTS_DEBUG ) {
-		error_log( 'AI_EXPERIMENTS_DEBUG_LOG: Reading last ' . $lines . ' lines from: ' . $file_path );
+	if ( defined( 'WP_MCP_SERVER_DEBUG' ) && WP_MCP_SERVER_DEBUG ) {
+		error_log( 'WP_MCP_SERVER_DEBUG_LOG: Reading last ' . $lines . ' lines from: ' . $file_path );
 	}
 	
 	$file = fopen( $file_path, 'r' );
 	if ( ! $file ) {
-		if ( defined( 'AI_EXPERIMENTS_DEBUG' ) && AI_EXPERIMENTS_DEBUG ) {
-			error_log( 'AI_EXPERIMENTS_DEBUG_LOG: Unable to open file: ' . $file_path );
+		if ( defined( 'WP_MCP_SERVER_DEBUG' ) && WP_MCP_SERVER_DEBUG ) {
+			error_log( 'WP_MCP_SERVER_DEBUG_LOG: Unable to open file: ' . $file_path );
 		}
 		throw new Exception( 'Unable to open file: ' . $file_path );
 	}
@@ -343,13 +343,13 @@ function ai_experiments_read_last_lines( $file_path, $lines ) {
 	fseek( $file, 0, SEEK_END );
 	$file_size = ftell( $file );
 	
-	if ( defined( 'AI_EXPERIMENTS_DEBUG' ) && AI_EXPERIMENTS_DEBUG ) {
-		error_log( 'AI_EXPERIMENTS_DEBUG_LOG: File size for line reading: ' . $file_size . ' bytes' );
+	if ( defined( 'WP_MCP_SERVER_DEBUG' ) && WP_MCP_SERVER_DEBUG ) {
+		error_log( 'WP_MCP_SERVER_DEBUG_LOG: File size for line reading: ' . $file_size . ' bytes' );
 	}
 
 	if ( $file_size === 0 ) {
-		if ( defined( 'AI_EXPERIMENTS_DEBUG' ) && AI_EXPERIMENTS_DEBUG ) {
-			error_log( 'AI_EXPERIMENTS_DEBUG_LOG: File is empty, returning empty string' );
+		if ( defined( 'WP_MCP_SERVER_DEBUG' ) && WP_MCP_SERVER_DEBUG ) {
+			error_log( 'WP_MCP_SERVER_DEBUG_LOG: File is empty, returning empty string' );
 		}
 		fclose( $file );
 		return '';
@@ -379,22 +379,22 @@ function ai_experiments_read_last_lines( $file_path, $lines ) {
 
 	fclose( $file );
 	
-	if ( defined( 'AI_EXPERIMENTS_DEBUG' ) && AI_EXPERIMENTS_DEBUG ) {
-		error_log( 'AI_EXPERIMENTS_DEBUG_LOG: Found ' . $lines_found . ' lines in content' );
+	if ( defined( 'WP_MCP_SERVER_DEBUG' ) && WP_MCP_SERVER_DEBUG ) {
+		error_log( 'WP_MCP_SERVER_DEBUG_LOG: Found ' . $lines_found . ' lines in content' );
 	}
 
 	// If we have more lines than needed, trim from the beginning
 	if ( $lines_found > $lines ) {
-		if ( defined( 'AI_EXPERIMENTS_DEBUG' ) && AI_EXPERIMENTS_DEBUG ) {
-			error_log( 'AI_EXPERIMENTS_DEBUG_LOG: Trimming content to last ' . $lines . ' lines' );
+		if ( defined( 'WP_MCP_SERVER_DEBUG' ) && WP_MCP_SERVER_DEBUG ) {
+			error_log( 'WP_MCP_SERVER_DEBUG_LOG: Trimming content to last ' . $lines . ' lines' );
 		}
 		$content_lines = explode( "\n", $content );
 		$content_lines = array_slice( $content_lines, -$lines );
 		$content = implode( "\n", $content_lines );
 	}
 
-	if ( defined( 'AI_EXPERIMENTS_DEBUG' ) && AI_EXPERIMENTS_DEBUG ) {
-		error_log( 'AI_EXPERIMENTS_DEBUG_LOG: Final content length: ' . strlen( $content ) . ' characters' );
+	if ( defined( 'WP_MCP_SERVER_DEBUG' ) && WP_MCP_SERVER_DEBUG ) {
+		error_log( 'WP_MCP_SERVER_DEBUG_LOG: Final content length: ' . strlen( $content ) . ' characters' );
 	}
 
 	return $content;

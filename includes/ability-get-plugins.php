@@ -75,39 +75,39 @@ add_action( 'abilities_api_init', function () {
  * @return array JSON response with plugin list or error.
  */
 function ai_experiments_get_plugin_list( $input ) {
-	if ( defined( 'AI_EXPERIMENTS_DEBUG' ) && AI_EXPERIMENTS_DEBUG ) {
+	if ( defined( 'WP_MCP_SERVER_DEBUG' ) && WP_MCP_SERVER_DEBUG ) {
 		error_log( 'AI_EXPERIMENTS_PLUGIN_LIST: Starting plugin list retrieval with input: ' . print_r( $input, true ) );
 	}
 
 	try {
 		// Check if get_plugins function is available
 		$get_plugins_exists = function_exists( 'get_plugins' );
-		if ( defined( 'AI_EXPERIMENTS_DEBUG' ) && AI_EXPERIMENTS_DEBUG ) {
+		if ( defined( 'WP_MCP_SERVER_DEBUG' ) && WP_MCP_SERVER_DEBUG ) {
 			error_log( 'AI_EXPERIMENTS_PLUGIN_LIST: get_plugins function exists: ' . ( $get_plugins_exists ? 'true' : 'false' ) );
 		}
 
 		if ( ! $get_plugins_exists ) {
-			if ( defined( 'AI_EXPERIMENTS_DEBUG' ) && AI_EXPERIMENTS_DEBUG ) {
+			if ( defined( 'WP_MCP_SERVER_DEBUG' ) && WP_MCP_SERVER_DEBUG ) {
 				error_log( 'AI_EXPERIMENTS_PLUGIN_LIST: Loading plugin.php from wp-admin/includes' );
 			}
 			require_once ABSPATH . 'wp-admin/includes/plugin.php';
 		}
 
 		// Get all installed plugins
-		if ( defined( 'AI_EXPERIMENTS_DEBUG' ) && AI_EXPERIMENTS_DEBUG ) {
+		if ( defined( 'WP_MCP_SERVER_DEBUG' ) && WP_MCP_SERVER_DEBUG ) {
 			error_log( 'AI_EXPERIMENTS_PLUGIN_LIST: Calling get_plugins()' );
 		}
 		$all_plugins = get_plugins();
 		$plugin_count = count( $all_plugins );
 		
-		if ( defined( 'AI_EXPERIMENTS_DEBUG' ) && AI_EXPERIMENTS_DEBUG ) {
+		if ( defined( 'WP_MCP_SERVER_DEBUG' ) && WP_MCP_SERVER_DEBUG ) {
 			error_log( 'AI_EXPERIMENTS_PLUGIN_LIST: Found ' . $plugin_count . ' total plugins' );
 		}
 
 		$active_plugins = get_option( 'active_plugins', array() );
 		$active_count = count( $active_plugins );
 		
-		if ( defined( 'AI_EXPERIMENTS_DEBUG' ) && AI_EXPERIMENTS_DEBUG ) {
+		if ( defined( 'WP_MCP_SERVER_DEBUG' ) && WP_MCP_SERVER_DEBUG ) {
 			error_log( 'AI_EXPERIMENTS_PLUGIN_LIST: Found ' . $active_count . ' active plugins' );
 		}
 
@@ -118,11 +118,11 @@ function ai_experiments_get_plugin_list( $input ) {
 		if ( $is_multisite ) {
 			$network_active = get_site_option( 'active_sitewide_plugins', array() );
 			$network_count = count( $network_active );
-			if ( defined( 'AI_EXPERIMENTS_DEBUG' ) && AI_EXPERIMENTS_DEBUG ) {
+			if ( defined( 'WP_MCP_SERVER_DEBUG' ) && WP_MCP_SERVER_DEBUG ) {
 				error_log( 'AI_EXPERIMENTS_PLUGIN_LIST: Multisite detected, found ' . $network_count . ' network active plugins' );
 			}
 		} else {
-			if ( defined( 'AI_EXPERIMENTS_DEBUG' ) && AI_EXPERIMENTS_DEBUG ) {
+			if ( defined( 'WP_MCP_SERVER_DEBUG' ) && WP_MCP_SERVER_DEBUG ) {
 				error_log( 'AI_EXPERIMENTS_PLUGIN_LIST: Single site installation' );
 			}
 		}
@@ -151,13 +151,13 @@ function ai_experiments_get_plugin_list( $input ) {
 				'version' => $plugin_data['Version'],
 			);
 
-			if ( defined( 'AI_EXPERIMENTS_DEBUG' ) && AI_EXPERIMENTS_DEBUG ) {
+			if ( defined( 'WP_MCP_SERVER_DEBUG' ) && WP_MCP_SERVER_DEBUG ) {
 				error_log( 'AI_EXPERIMENTS_PLUGIN_LIST: Processed plugin: ' . $plugin_data['Name'] . ' (' . $plugin_slug . ') - ' . $status );
 			}
 		}
 
 		$final_count = count( $plugins );
-		if ( defined( 'AI_EXPERIMENTS_DEBUG' ) && AI_EXPERIMENTS_DEBUG ) {
+		if ( defined( 'WP_MCP_SERVER_DEBUG' ) && WP_MCP_SERVER_DEBUG ) {
 			error_log( 'AI_EXPERIMENTS_PLUGIN_LIST: Plugin list retrieval completed successfully with ' . $final_count . ' plugins' );
 		}
 
@@ -167,7 +167,7 @@ function ai_experiments_get_plugin_list( $input ) {
 		);
 
 	} catch ( Exception $e ) {
-		if ( defined( 'AI_EXPERIMENTS_DEBUG' ) && AI_EXPERIMENTS_DEBUG ) {
+		if ( defined( 'WP_MCP_SERVER_DEBUG' ) && WP_MCP_SERVER_DEBUG ) {
 			error_log( 'AI_EXPERIMENTS_PLUGIN_LIST: Exception caught: ' . $e->getMessage() );
 			error_log( 'AI_EXPERIMENTS_PLUGIN_LIST: Exception trace: ' . $e->getTraceAsString() );
 		}

@@ -1,6 +1,6 @@
 {
-    "name": "jonathanbossenger/ai-experiments-mcp-server",
-    "description": "AI Experiments MCP Server",
+    "name": "jonathanbossenger/wp-mcp-server-demo",
+    "description": "Implements a basic MCP server using Abilities API and the MCP Adapter",
     "type": "wordpress-plugin",
     "license": "GPL-2.0-or-later",
     "authors": [
