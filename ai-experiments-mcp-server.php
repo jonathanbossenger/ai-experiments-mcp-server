@@ -27,8 +27,6 @@ require_once __DIR__ . '/includes/ability-debug-log.php';
 require_once __DIR__ . '/includes/ability-create-post.php';
 require_once __DIR__ . '/includes/ability-check-security.php';
 
-error_log( "Abilities Loaded" );
-
 // Get the adapter instance
 $adapter = WP\MCP\Core\McpAdapter::instance();
 /*
@@ -36,7 +34,6 @@ $adapter = WP\MCP\Core\McpAdapter::instance();
  * mcp_adapter_init accepts a single parameter: the MCP adapter instance.
  */
 add_action( 'mcp_adapter_init', function ( $adapter ) {
-	error_log( "MCP Adapter Init" );
 	// MCP Server configuration
 	$adapter->create_server(
 		'ai-experiments',                       // Unique server identifier
