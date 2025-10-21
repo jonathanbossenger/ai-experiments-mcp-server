@@ -44,7 +44,7 @@ add_action( 'mcp_adapter_init', function ( $adapter ) {
 		'Custom AI Experiments MCP Server',     // Server description
 		'v1.0.0',                               // Server version
 		array(                                  // Transport methods
-            \WP\MCP\Transport\Http\RestTransport::class,
+            \WP\MCP\Transport\HttpTransport::class,
 		),
         \WP\MCP\Infrastructure\ErrorHandling\ErrorLogMcpErrorHandler::class,         // Error handler
         \WP\MCP\Infrastructure\Observability\NullMcpObservabilityHandler::class,     // Observability handler
