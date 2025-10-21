@@ -16,6 +16,7 @@ add_action( 'abilities_api_init', function () {
 		array(
 			'label'               => __( 'Debug Log Reader', 'ai-experiments-mcp-server' ),
 			'description'         => __( 'Reads the contents of the WordPress debug.log file from wp-content directory.', 'ai-experiments-mcp-server' ),
+			'category'            => 'mcp-server-demo',
 			'input_schema'        => array(
 				'type'       => 'object',
 				'properties' => array(
@@ -72,6 +73,7 @@ add_action( 'abilities_api_init', function () {
 		array(
 			'label'               => __( 'Debug Log Clearer', 'ai-experiments-mcp-server' ),
 			'description'         => __( 'Clears the contents of the WordPress debug.log file from wp-content directory.', 'ai-experiments-mcp-server' ),
+			'category'            => 'mcp-server-demo',
 			'input_schema'        => array(),
 			'output_schema'       => array(
 				'type'       => 'object',

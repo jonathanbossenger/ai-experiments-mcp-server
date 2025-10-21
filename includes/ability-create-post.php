@@ -34,6 +34,7 @@ add_action( 'abilities_api_init', function () {
 	wp_register_ability( 'post/create-post', array(
 		'label'               => __( 'Create Post', 'mcp-server' ),
 		'description'         => __( 'Creates a new blog post with the provided content', 'mcp-server' ),
+		'category'            => 'mcp-server-demo',
 		'input_schema'        => array(
 			'type'       => 'object',
 			'properties' => array(

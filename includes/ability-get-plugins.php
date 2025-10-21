@@ -16,6 +16,7 @@ add_action( 'abilities_api_init', function () {
 		array(
 			'label'               => __( 'Plugin List', 'ai-experiments-mcp-server' ),
 			'description'         => __( 'Retrieves a list of all installed WordPress plugins with their names and slugs.', 'ai-experiments-mcp-server' ),
+			'category'            => 'mcp-server-demo',
 			'input_schema'        => array(),
 			'output_schema'       => array(
 				'type'       => 'object',

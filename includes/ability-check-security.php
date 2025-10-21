@@ -124,6 +124,7 @@ add_action( 'abilities_api_init', function () {
 		array(
 			'label'               => __( 'Plugin Security Check', 'ai-experiments-mcp-server' ),
 			'description'         => __( 'Analyzes WordPress plugins for security vulnerabilities and issues using Plugin Check security category checks.', 'ai-experiments-mcp-server' ),
+			'category'            => 'mcp-server-demo',
 			'input_schema'        => array(
 				'type'       => 'object',
 				'properties' => array(
