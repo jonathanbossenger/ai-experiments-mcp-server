@@ -10,9 +10,15 @@
         }
     ],
     "require": {
-        "wordpress/abilities-api": "^0.2.0",
-        "wordpress/mcp-adapter": "^0.1.0"
+        "wordpress/abilities-api": "^0.3.0",
+        "wordpress/mcp-adapter": "dev-trunk"
     },
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "https://github.com/WordPress/mcp-adapter"
+        }
+    ],
     "config": {
         "allow-plugins": {
             "automattic/jetpack-autoloader": true
