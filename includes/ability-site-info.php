@@ -14,6 +14,7 @@ add_action( 'abilities_api_init', function(){
 	wp_register_ability( 'site/site-info', array(
 		'label' => __( 'Site Info', 'ai-experiments' ),
 		'description' => __( 'Returns information about this WordPress site', 'ai-experiments' ),
+		'category' => 'mcp-server-demo',
 		'input_schema' => array(),
 		'output_schema' => array(
 			'type' => 'object',
