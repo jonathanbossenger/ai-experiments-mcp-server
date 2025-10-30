@@ -1,0 +1,21 @@
+{
+    "name": "jonathanbossenger/wp-mcp-server-demo",
+    "description": "A demo plugin to showcase the WordPress MCP Server functionality.",
+    "type": "wordpress-plugin",
+    "license": "GPL-2.0-or-later",
+    "authors": [
+        {
+            "name": "Jonathan Bossenger",
+            "email": "jonathanbossenger@gmail.com"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require-dev": {
+        "wp-coding-standards/wpcs": "^3.0"
+    },
+    "config": {
+        "allow-plugins": {
+            "dealerdirect/phpcodesniffer-composer-installer": true
+        }
+    }
+}
