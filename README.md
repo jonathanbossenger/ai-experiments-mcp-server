@@ -1,9 +1,5 @@
 # WP MCP Server Demo
 
-> **⚠️ EXPERIMENTAL PLUGIN WARNING**  
-> This is an experimental plugin created for workshop demonstration purposes only. It showcases how WordPress Abilities and the MCP Adapter work together. No care has been put into coding standards, comprehensive security checks, any sort of architecture patterns, or production best practices. 
-> **DO NOT USE IN PRODUCTION ENVIRONMENTS.**
-
 A lightweight WordPress plugin that configures a custom Model Context Protocol (MCP) server using the WordPress MCP Adapter and Abilities API. This plugin acts as a configuration wrapper that creates an MCP server exposing abilities defined in the [WP Abilities API Demo](https://github.com/jonathanbossenger/wp-abilities-api-demo) plugin.
 
 ## Overview
