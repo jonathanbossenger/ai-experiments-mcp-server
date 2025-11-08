@@ -4,8 +4,83 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "968bd5a224fe226cf228f0ef2f9c503f",
-    "packages": [],
+    "content-hash": "2c1a3aafe299906cfd15b0d9c02fd0c4",
+    "packages": [
+        {
+            "name": "wordpress/mcp-adapter",
+            "version": "v0.3.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/WordPress/mcp-adapter.git",
+                "reference": "653ca8d95180b25809b1a1dc489d8305ec5beb63"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/WordPress/mcp-adapter/zipball/653ca8d95180b25809b1a1dc489d8305ec5beb63",
+                "reference": "653ca8d95180b25809b1a1dc489d8305ec5beb63",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^7.4 || ^8.0"
+            },
+            "require-dev": {
+                "automattic/vipwpcs": "^3.0",
+                "php-stubs/wp-cli-stubs": "^2.12",
+                "phpcompatibility/php-compatibility": "10.x-dev as 9.99.99",
+                "phpcompatibility/phpcompatibility-wp": "^2.1",
+                "phpstan/extension-installer": "^1.3",
+                "phpstan/php-8-stubs": "^0.4.24",
+                "phpstan/phpstan": "^2.1.22",
+                "phpstan/phpstan-deprecation-rules": "^2.0.3",
+                "phpunit/phpunit": "^9.6",
+                "slevomat/coding-standard": "^8.0",
+                "szepeviktor/phpstan-wordpress": "^2.0",
+                "wp-phpunit/wp-phpunit": "^6.5",
+                "wpackagist-plugin/plugin-check": "^1.6",
+                "yoast/phpunit-polyfills": "^4.0"
+            },
+            "type": "library",
+            "extra": {
+                "installer-paths": {
+                    "vendor/{$vendor}/{$name}/": [
+                        "wpackagist-plugin/plugin-check"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "WP\\MCP\\": "includes/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "GPL-2.0-or-later"
+            ],
+            "authors": [
+                {
+                    "name": "WordPress AI Team",
+                    "homepage": "https://make.wordpress.org/ai/"
+                }
+            ],
+            "description": "Adapter for Abilities API, letting WordPress abilities to be used as MCP tools, resources or prompts",
+            "homepage": "https://github.com/wordpress/mcp-adapter",
+            "keywords": [
+                "abilities-api",
+                "adapter",
+                "ai",
+                "api",
+                "integration",
+                "mcp",
+                "model-context-protocol",
+                "wordpress"
+            ],
+            "support": {
+                "issues": "https://github.com/wordpress/mcp-adapter/issues",
+                "source": "https://github.com/wordpress/mcp-adapter"
+            },
+            "time": "2025-11-06T14:56:51+00:00"
+        }
+    ],
     "packages-dev": [
         {
             "name": "dealerdirect/phpcodesniffer-composer-installer",
@@ -109,12 +184,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/PHPCSStandards/PHPCSExtra.git",
-                "reference": "8e89a01c7b8fed84a12a2a7f5a23a44cdbe4f62e"
+                "reference": "2081fc0b2b7768d3ac2f3f34cd7f4a1448529718"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/PHPCSStandards/PHPCSExtra/zipball/8e89a01c7b8fed84a12a2a7f5a23a44cdbe4f62e",
-                "reference": "8e89a01c7b8fed84a12a2a7f5a23a44cdbe4f62e",
+                "url": "https://api.github.com/repos/PHPCSStandards/PHPCSExtra/zipball/2081fc0b2b7768d3ac2f3f34cd7f4a1448529718",
+                "reference": "2081fc0b2b7768d3ac2f3f34cd7f4a1448529718",
                 "shasum": ""
             },
             "require": {
@@ -125,7 +200,7 @@
             "require-dev": {
                 "php-parallel-lint/php-console-highlighter": "^1.0",
                 "php-parallel-lint/php-parallel-lint": "^1.4.0",
-                "phpcsstandards/phpcsdevcs": "^1.1.6",
+                "phpcsstandards/phpcsdevcs": "^1.2.0",
                 "phpcsstandards/phpcsdevtools": "^1.2.1",
                 "phpunit/phpunit": "^4.5 || ^5.0 || ^6.0 || ^7.0 || ^8.0 || ^9.3.4"
             },
@@ -184,7 +259,7 @@
                     "type": "thanks_dev"
                 }
             ],
-            "time": "2025-10-28T17:00:02+00:00"
+            "time": "2025-11-06T01:05:13+00:00"
         },
         {
             "name": "phpcsstandards/phpcsutils",
@@ -192,12 +267,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/PHPCSStandards/PHPCSUtils.git",
-                "reference": "9f644208df7a66e8ab84956b89364d1662d5c68e"
+                "reference": "70cabf645585136d49c8282b6abe83d64a05579c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/PHPCSStandards/PHPCSUtils/zipball/9f644208df7a66e8ab84956b89364d1662d5c68e",
-                "reference": "9f644208df7a66e8ab84956b89364d1662d5c68e",
+                "url": "https://api.github.com/repos/PHPCSStandards/PHPCSUtils/zipball/70cabf645585136d49c8282b6abe83d64a05579c",
+                "reference": "70cabf645585136d49c8282b6abe83d64a05579c",
                 "shasum": ""
             },
             "require": {
@@ -209,7 +284,7 @@
                 "ext-filter": "*",
                 "php-parallel-lint/php-console-highlighter": "^1.0",
                 "php-parallel-lint/php-parallel-lint": "^1.4.0",
-                "phpcsstandards/phpcsdevcs": "^1.1.6",
+                "phpcsstandards/phpcsdevcs": "^1.2.0",
                 "yoast/phpunit-polyfills": "^1.1.0 || ^2.0.0 || ^3.0.0"
             },
             "default-branch": true,
@@ -278,7 +353,7 @@
                     "type": "thanks_dev"
                 }
             ],
-            "time": "2025-10-27T17:17:38+00:00"
+            "time": "2025-11-06T00:57:24+00:00"
         },
         {
             "name": "squizlabs/php_codesniffer",
@@ -286,12 +361,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/PHPCSStandards/PHP_CodeSniffer.git",
-                "reference": "a82bffd4c1a8974274eda1a43df2d54130662815"
+                "reference": "d557e40c84783e5c80fbdb2487581ecb64fbfb5d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/PHPCSStandards/PHP_CodeSniffer/zipball/a82bffd4c1a8974274eda1a43df2d54130662815",
-                "reference": "a82bffd4c1a8974274eda1a43df2d54130662815",
+                "url": "https://api.github.com/repos/PHPCSStandards/PHP_CodeSniffer/zipball/d557e40c84783e5c80fbdb2487581ecb64fbfb5d",
+                "reference": "d557e40c84783e5c80fbdb2487581ecb64fbfb5d",
                 "shasum": ""
             },
             "require": {
@@ -357,7 +432,7 @@
                     "type": "thanks_dev"
                 }
             ],
-            "time": "2025-10-27T15:49:20+00:00"
+            "time": "2025-11-04T18:07:16+00:00"
         },
         {
             "name": "wp-coding-standards/wpcs",

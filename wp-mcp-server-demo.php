@@ -3,7 +3,7 @@
  * Plugin Name: WP MCP Server Demo
  * Description: A demo plugin to showcase the WordPress MCP Server functionality.
  * Version: 1.0.0
- * Requires Plugins: abilities-api, mcp-adapter, wp-abilities-api-demo
+ * Requires Plugins: wp-abilities-api-demo
  * Author: Jonathan Bossenger
  * Author URI: https://jonathanbossenger.com
  * License: GPL-2.0+
@@ -15,14 +15,19 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
 }
 
-// Check if the MCP Adapter plugin is installed and active. https://github.com/WordPress/mcp-adapter.
-if ( is_plugin_active( 'mcp-adapter/mcp-adapter.php' ) ) {
-	// Make sure the MCP Adapter class exists before using it.
-	if ( class_exists( \WP\MCP\Core\McpAdapter::class ) ) {
-		// Initialize the MCP adapter and activate the default server.
-		\WP\MCP\Core\McpAdapter::instance();
-	}
+if ( ! file_exists( __DIR__ . '/vendor/autoload.php' ) ) {
+    // Composer dependencies are missing
+    add_action( 'admin_notices', function() {
+        ?>
+        <div class="notice notice-error">
+            <p><?php esc_html_e( 'WP MCP Server Demo plugin requires Composer dependencies. Please run "composer install" in the plugin directory.', 'wp-mcp-server-demo' ); ?></p>
+        </div>
+        <?php
+    } );
+    return;
 }
+
+require_once __DIR__ . '/vendor/autoload.php';
 
 /**
  * Register a custom MCP server with specific tools, resources and prompts.
@@ -35,12 +40,12 @@ if ( is_plugin_active( 'wp-abilities-api-demo/wp-abilities-api-demo.php' ) ) {
 		'mcp_adapter_init',
 		function ( $adapter ) {
 			$abilities = array(
-				'site/site-info',
-				'debug/read-log',
-				'debug/clear-log',
-				'plugins/get-plugins',
+                'site/site-info',
+                'plugins/get-plugins',
+                'debug/read-log',
+                'debug/clear-log',
 				'post/create-post',
-				'security/check-security',
+				'plugin-check/check-security',
 			);
 			$adapter->create_server(
 				'mcp-demo-server', // Unique server identifier.
