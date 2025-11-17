@@ -15,14 +15,30 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
 }
 
-// Check if the MCP Adapter plugin is installed and active. https://github.com/WordPress/mcp-adapter.
-if ( is_plugin_active( 'mcp-adapter/mcp-adapter.php' ) ) {
-	// Make sure the MCP Adapter class exists before using it.
-	if ( class_exists( \WP\MCP\Core\McpAdapter::class ) ) {
-		// Initialize the MCP adapter and activate the default server.
-		\WP\MCP\Core\McpAdapter::instance();
-	}
+if ( ! file_exists( __DIR__ . '/vendor/autoload.php' ) ) {
+	// Composer dependencies are missing.
+	add_action(
+		'admin_notices',
+		function () {
+			?>
+			<div class="notice notice-error">
+				<p><?php esc_html_e( 'WP Abilities API Demo plugin requires Composer dependencies. Please run "composer install" in the plugin directory.', 'wp-abilities-api-demo' ); ?></p>
+			</div>
+			<?php
+		}
+	);
+	return;
 }
+
+require_once __DIR__ . '/vendor/autoload.php';
+
+if ( ! class_exists( \WP\MCP\Core\McpAdapter::class ) ) {
+	return;
+}
+
+// Initialize the MCP adapter and activate the default server.
+\WP\MCP\Core\McpAdapter::instance();
+
 
 /**
  * Register a custom MCP server with specific tools, resources and prompts.
@@ -39,6 +55,8 @@ if ( is_plugin_active( 'wp-abilities-api-demo/wp-abilities-api-demo.php' ) ) {
 				'debug/read-log',
 				'debug/clear-log',
 				'plugins/get-plugins',
+				'plugins/install-plugin',
+				'plugins/delete-plugin',
 				'post/create-post',
 				'security/check-security',
 			);
