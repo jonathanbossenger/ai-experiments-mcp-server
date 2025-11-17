@@ -3,7 +3,7 @@
  * Plugin Name: WP MCP Server Demo
  * Description: A demo plugin to showcase the WordPress MCP Server functionality.
  * Version: 1.0.0
- * Requires Plugins: abilities-api, mcp-adapter, wp-abilities-api-demo
+ * Requires Plugins: wp-abilities-api-demo
  * Author: Jonathan Bossenger
  * Author URI: https://jonathanbossenger.com
  * License: GPL-2.0+
